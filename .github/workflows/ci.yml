@@ -91,7 +91,7 @@ jobs:
 
             for m in "canal-server" "canal-admin" "canal-adapter"; do
 
-            for jdk in "eclipse-temurin:8u422-b05-jdk-noble" "eclipse-temurin:17.0.12_7-jdk-noble" "eclipse-temurin:21.0.4_7-jdk-noble" "11.0.24_8-jdk-noble"; do
+            for jdk in "eclipse-temurin:8u422-b05-jdk-noble" "eclipse-temurin:17.0.12_7-jdk-noble" "eclipse-temurin:21.0.4_7-jdk-noble" "eclipse-temurin:11.0.24_8-jdk-noble"; do
                 latest_tag="";
                 if [[ "${jdk}" =~ "eclipse-temurin:8u422" ]]; then
                     latest_tag="${latest_tag} --tag dyrnq/${m}:${ver} --tag dyrnq/${m}:${ver}-jdk8" 
