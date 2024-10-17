@@ -31,6 +31,7 @@ RUN set -eux; \
     p7zip-full \
     zip \
     jq \
+    gosu \
     && \
     localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
     groupadd -g ${gid} ${group} && useradd -u ${uid} -g ${gid} -m -s /bin/bash ${user} && \
