@@ -3,8 +3,8 @@ FROM ${BASE_IMAGE}
 
 ARG user=admin
 ARG group=admin
-ARG uid=1000
-ARG gid=1000
+ARG uid=1001
+ARG gid=1001
 
 
 ENV DEBIAN_FRONTEND=noninteractive \
