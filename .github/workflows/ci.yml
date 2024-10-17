@@ -73,8 +73,12 @@ jobs:
       - name: Build canal
         run: |
             pushd canal || exit 1
+                sed -i \
+                -e "s@http://repo1.maven.org/maven2@https://repo1.maven.org/maven2@g" \
+                -e "s@http://download.java.net/maven/2/@https://download.java.net/maven/2/@g" \
+                pom.xml
                 mvn clean package -Dmaven.test.skip -Denv=release
-            pod || exit 1
+            popd || exit 1
       - name: Show canal build target
         run: |
             ls -la canal/target
