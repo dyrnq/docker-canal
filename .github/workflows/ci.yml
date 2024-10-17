@@ -27,14 +27,14 @@ jobs:
         - "canal-1.1.5-alpha-2"
         - "canal-1.1.5-alpha-1"
         - "canal-1.1.4"
-        - "canal-1.1.4-alpha-2"
-        - "canal-1.1.4-alpha-1"
-        - "canal-1.1.3"
-        - "canal-1.1.3-alpha-3"
-        - "canal-1.1.3-alpha-2"
-        - "canal-1.1.3-alpha-1"
-        - "canal-1.1.2"
-        - "canal-1.1.1"
+        # - "canal-1.1.4-alpha-2"
+        # - "canal-1.1.4-alpha-1"
+        # - "canal-1.1.3"
+        # - "canal-1.1.3-alpha-3"
+        # - "canal-1.1.3-alpha-2"
+        # - "canal-1.1.3-alpha-1"
+        # - "canal-1.1.2"
+        # - "canal-1.1.1"
     steps:
       -
         name: Checkout
@@ -85,6 +85,37 @@ jobs:
       - name: Build dockerfile (with no push)
         run: |
             echo "Build dockerfile (with no push)"
+            ver="${{ matrix.vers }}"
+            ver="${ver/canal-/}"
+            echo "${ver}"
+
+            for m in "canal-server" "canal-admin" "canal-adapter"; do
+
+            for jdk in "eclipse-temurin:8u422-b05-jdk-noble" "eclipse-temurin:17.0.12_7-jdk-noble" "eclipse-temurin:21.0.4_7-jdk-noble" "11.0.24_8-jdk-noble"; do
+                latest_tag="";
+                if [[ "${jdk}" =~ "eclipse-temurin:8u422" ]]; then
+                    latest_tag="${latest_tag} --tag dyrnq/${m}:${ver} --tag dyrnq/${m}:${ver}-jdk8" 
+                fi
+                if [[ "${jdk}" =~ "eclipse-temurin:17" ]]; then
+                    latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk17" 
+                fi
+                if [[ "${jdk}" =~ "eclipse-temurin:21" ]]; then
+                    latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk21" 
+                fi
+                if [[ "${jdk}" =~ "eclipse-temurin:11" ]]; then
+                    latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk11" 
+                fi
+
+                docker buildx build \
+                --platform linux/amd64,linux/arm64/v8 \
+                --output "type=image,push=false" \
+                --file ./${m}/Dockerfile . \
+                --build-arg BASE_IMAGE="${jdk}" \
+                ${latest_tag}
+                
+            done
+            done
+
 
 
       -
@@ -97,3 +128,33 @@ jobs:
       - name: Build dockerfile (with push)
         run: |
             echo "Build dockerfile (with push)";
+            ver="${{ matrix.vers }}"
+            ver="${ver/canal-/}"
+            echo "${ver}"
+
+            for m in "canal-server" "canal-admin" "canal-adapter"; do
+
+            for jdk in "eclipse-temurin:8u422-b05-jdk-noble" "eclipse-temurin:17.0.12_7-jdk-noble" "eclipse-temurin:21.0.4_7-jdk-noble" "11.0.24_8-jdk-noble"; do
+                latest_tag="";
+                if [[ "${jdk}" =~ "eclipse-temurin:8u422" ]]; then
+                    latest_tag="${latest_tag} --tag dyrnq/${m}:${ver} --tag dyrnq/${m}:${ver}-jdk8" 
+                fi
+                if [[ "${jdk}" =~ "eclipse-temurin:17" ]]; then
+                    latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk17" 
+                fi
+                if [[ "${jdk}" =~ "eclipse-temurin:21" ]]; then
+                    latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk21" 
+                fi
+                if [[ "${jdk}" =~ "eclipse-temurin:11" ]]; then
+                    latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk11" 
+                fi
+
+                docker buildx build \
+                --platform linux/amd64,linux/arm64/v8 \
+                --output "type=image,push=true" \
+                --file ./${m}/Dockerfile . \
+                --build-arg BASE_IMAGE="${jdk}" \
+                ${latest_tag}
+                
+            done
+            done
