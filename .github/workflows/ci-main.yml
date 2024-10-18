@@ -156,7 +156,7 @@ jobs:
                 echo "${latest_tag}"
                 docker buildx build \
                 --platform linux/amd64,linux/arm64/v8 \
-                --output "type=image,push=false" \
+                --output "type=image,push=true" \
                 --file ./${m}/Dockerfile . \
                 --build-arg BASE_IMAGE="${base_img}" \
                 ${latest_tag}
