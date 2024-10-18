@@ -104,6 +104,7 @@ jobs:
             ver="${ver/canal-/}"
             echo "${ver}"
             m="${{ matrix.m }}"
+            base_img="${{matrix.base_img}}"
 
             #for m in "canal-server" "canal-admin" "canal-adapter"; do
 
