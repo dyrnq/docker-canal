@@ -42,9 +42,9 @@ RUN set -eux; \
     rm -f /tmp/canal.deployer-*.tar.gz && \
     chown -R ${uid}:${gid} /home/${user} && \
     rm -rf /var/lib/apt/lists/*; \
-    if [ -f /home/${user}/canal-server/bin/startup.sh ]; then sed -i.bak -e "s@\$JAVA \$JAVA_OPTS@exec gosu ${user} \$JAVA \$JAVA_OPTS@g" -e "s@1>>\$base.*&@@g" -e "s@1>>/dev/null.*&@@g" /home/${user}/canal-server/bin/startup.sh; fi
+    if [ -f /home/${user}/canal-server/bin/startup.sh ]; then sed -i.bak -e "s@\$JAVA \$JAVA_OPTS@exec \$JAVA \$JAVA_OPTS@g" -e "s@1>>\$base.*&@@g" -e "s@1>>/dev/null.*&@@g" /home/${user}/canal-server/bin/startup.sh; fi
 
     EXPOSE 11110 11111 11112 9100
 
     WORKDIR /home/${user}/canal-server
-    ENTRYPOINT ["bin/startup.sh"]
+    ENTRYPOINT ["/docker-entrypoint.sh"]

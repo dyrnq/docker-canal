@@ -42,10 +42,11 @@ RUN set -eux; \
     rm -f /tmp/canal.adapter-*.tar.gz && \
     chown -R ${uid}:${gid} /home/${user} && \
     rm -rf /var/lib/apt/lists/*; \
-    if [ -f /home/${user}/canal-adapter/bin/startup.sh ]; then sed -i.bak -e "s@\$JAVA \$JAVA_OPTS@exec gosu ${user} \$JAVA \$JAVA_OPTS@g" -e "s@1>>\$base.*&@@g" -e "s@1>>/dev/null.*&@@g" /home/${user}/canal-adapter/bin/startup.sh; fi
+    if [ -f /home/${user}/canal-adapter/bin/startup.sh ]; then sed -i.bak -e "s@\$JAVA \$JAVA_OPTS@exec \$JAVA \$JAVA_OPTS@g" -e "s@1>>\$base.*&@@g" -e "s@1>>/dev/null.*&@@g" /home/${user}/canal-adapter/bin/startup.sh; fi
 
 
-
+    COPY docker-entrypoint.sh /usr/local/bin/
+    RUN ln -s /usr/local/bin/docker-entrypoint.sh /docker-entrypoint.sh
 
     WORKDIR /home/${user}/canal-adapter
-    ENTRYPOINT ["bin/startup.sh"]
+    ENTRYPOINT ["/docker-entrypoint.sh"]
