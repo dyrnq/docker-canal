@@ -1,10 +1,10 @@
 name: ci
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  # push:
+  #   branches: [ "main" ]
+  # pull_request:
+  #   branches: [ "main" ]
   workflow_dispatch:
 jobs:
   build:
@@ -104,16 +104,16 @@ jobs:
     #         for base_img in "eclipse-temurin:8u422-b05-jdk-noble" "eclipse-temurin:17.0.12_7-jdk-noble" "eclipse-temurin:21.0.4_7-jdk-noble" "eclipse-temurin:11.0.24_8-jdk-noble"; do
     #             latest_tag="";
     #             if [[ "${base_img}" =~ "eclipse-temurin:8u422" ]]; then
-    #                 latest_tag="${latest_tag} --tag dyrnq/${m}:${ver} --tag dyrnq/${m}:${ver}-jdk8" 
+    #                 latest_tag="${latest_tag} --tag dyrnq/${m}:${ver} --tag dyrnq/${m}:${ver}-jdk8"
     #             fi
     #             if [[ "${base_img}" =~ "eclipse-temurin:17" ]]; then
-    #                 latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk17" 
+    #                 latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk17"
     #             fi
     #             if [[ "${base_img}" =~ "eclipse-temurin:21" ]]; then
-    #                 latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk21" 
+    #                 latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk21"
     #             fi
     #             if [[ "${base_img}" =~ "eclipse-temurin:11" ]]; then
-    #                 latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk11" 
+    #                 latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk11"
     #             fi
 
     #             docker buildx build \
@@ -149,16 +149,16 @@ jobs:
             #for base_img in "eclipse-temurin:8u422-b05-jdk-noble" "eclipse-temurin:17.0.12_7-jdk-noble" "eclipse-temurin:21.0.4_7-jdk-noble" "eclipse-temurin:11.0.24_8-jdk-noble"; do
                 latest_tag="";
                 if [[ "${base_img}" =~ "eclipse-temurin:8u422" ]]; then
-                    latest_tag="${latest_tag} --tag dyrnq/${m}:${ver} --tag dyrnq/${m}:${ver}-jdk8" 
+                    latest_tag="${latest_tag} --tag dyrnq/${m}:${ver} --tag dyrnq/${m}:${ver}-jdk8"
                 fi
                 if [[ "${base_img}" =~ "eclipse-temurin:17" ]]; then
-                    latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk17" 
+                    latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk17"
                 fi
                 if [[ "${base_img}" =~ "eclipse-temurin:21" ]]; then
-                    latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk21" 
+                    latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk21"
                 fi
                 if [[ "${base_img}" =~ "eclipse-temurin:11" ]]; then
-                    latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk11" 
+                    latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk11"
                 fi
 
                 docker buildx build \
