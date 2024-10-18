@@ -82,7 +82,8 @@ jobs:
 
       - name: Clone canal
         run: |
-            git clone --branch ${{ matrix.vers }} --depth 1 https://github.com/alibaba/canal.git
+            ver="${{ github.event.inputs.version }}"
+            git clone --branch "${ver}" --depth 1 https://github.com/alibaba/canal.git
 
       - name: Build canal
         run: |
