@@ -102,6 +102,7 @@ jobs:
                     latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk11"
                 fi
 
+                echo "${latest_tag}"
                 docker buildx build \
                 --platform linux/amd64,linux/arm64/v8 \
                 --output "type=image,push=false" \
@@ -152,6 +153,7 @@ jobs:
                     latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk11"
                 fi
 
+                echo "${latest_tag}"
                 docker buildx build \
                 --platform linux/amd64,linux/arm64/v8 \
                 --output "type=image,push=false" \

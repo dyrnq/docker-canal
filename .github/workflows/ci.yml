@@ -92,53 +92,11 @@ jobs:
       - name: Show canal build target
         run: |
             ls -la canal/target
-    #   - name: Build dockerfile (with no push)
-    #     run: |
-    #         echo "Build dockerfile (with no push)"
-    #         ver="${{ matrix.vers }}"
-    #         ver="${ver/canal-/}"
-    #         echo "${ver}"
-    #         m="${{ matrix.m }}"
-
-    #         #for m in "canal-server" "canal-admin" "canal-adapter"; do
-
-    #         for base_img in "eclipse-temurin:8u422-b05-jdk-noble" "eclipse-temurin:17.0.12_7-jdk-noble" "eclipse-temurin:21.0.4_7-jdk-noble" "eclipse-temurin:11.0.24_8-jdk-noble"; do
-    #             latest_tag="";
-    #             if [[ "${base_img}" =~ "eclipse-temurin:8u422" ]]; then
-    #                 latest_tag="${latest_tag} --tag dyrnq/${m}:${ver} --tag dyrnq/${m}:${ver}-jdk8"
-    #             fi
-    #             if [[ "${base_img}" =~ "eclipse-temurin:17" ]]; then
-    #                 latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk17"
-    #             fi
-    #             if [[ "${base_img}" =~ "eclipse-temurin:21" ]]; then
-    #                 latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk21"
-    #             fi
-    #             if [[ "${base_img}" =~ "eclipse-temurin:11" ]]; then
-    #                 latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk11"
-    #             fi
-
-    #             docker buildx build \
-    #             --platform linux/amd64,linux/arm64/v8 \
-    #             --output "type=image,push=false" \
-    #             --file ./${m}/Dockerfile . \
-    #             --build-arg BASE_IMAGE="${base_img}" \
-    #             ${latest_tag}
-
-    #         done
-    #         #done
-
-
-
-      -
-        name: Login to DockerHub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build dockerfile (with push)
+      - name: Build dockerfile (with no push)
         run: |
             echo "Build dockerfile (with no push)"
+            latest=$(cat latest);
+            echo $latest;
             ver="${{ matrix.vers }}"
             ver="${ver/canal-/}"
             echo "${ver}"
@@ -151,6 +109,9 @@ jobs:
                 latest_tag="";
                 if [[ "${base_img}" =~ "eclipse-temurin:8u422" ]]; then
                     latest_tag="${latest_tag} --tag dyrnq/${m}:${ver} --tag dyrnq/${m}:${ver}-jdk8"
+                    if [ "$latest" = "${ver}"  ]; then
+                        latest_tag="${latest_tag} --tag dyrnq/${m}:latest"
+                    fi
                 fi
                 if [[ "${base_img}" =~ "eclipse-temurin:17" ]]; then
                     latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk17"
@@ -162,6 +123,58 @@ jobs:
                     latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk11"
                 fi
 
+                echo "${latest_tag}"
+                docker buildx build \
+                --platform linux/amd64,linux/arm64/v8 \
+                --output "type=image,push=false" \
+                --file ./${m}/Dockerfile . \
+                --build-arg BASE_IMAGE="${base_img}" \
+                ${latest_tag}
+
+            #done
+            #done
+
+
+
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build dockerfile (with push)
+        run: |
+            echo "Build dockerfile (with push)"
+            latest=$(cat latest);
+            echo $latest;
+            ver="${{ matrix.vers }}"
+            ver="${ver/canal-/}"
+            echo "${ver}"
+            m="${{ matrix.m }}"
+            base_img="${{matrix.base_img}}"
+
+            #for m in "canal-server" "canal-admin" "canal-adapter"; do
+
+            #for base_img in "eclipse-temurin:8u422-b05-jdk-noble" "eclipse-temurin:17.0.12_7-jdk-noble" "eclipse-temurin:21.0.4_7-jdk-noble" "eclipse-temurin:11.0.24_8-jdk-noble"; do
+                latest_tag="";
+                if [[ "${base_img}" =~ "eclipse-temurin:8u422" ]]; then
+                    latest_tag="${latest_tag} --tag dyrnq/${m}:${ver} --tag dyrnq/${m}:${ver}-jdk8"
+                    if [ "$latest" = "${ver}"  ]; then
+                        latest_tag="${latest_tag} --tag dyrnq/${m}:latest"
+                    fi
+                fi
+                if [[ "${base_img}" =~ "eclipse-temurin:17" ]]; then
+                    latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk17"
+                fi
+                if [[ "${base_img}" =~ "eclipse-temurin:21" ]]; then
+                    latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk21"
+                fi
+                if [[ "${base_img}" =~ "eclipse-temurin:11" ]]; then
+                    latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk11"
+                fi
+
+                echo "${latest_tag}"
                 docker buildx build \
                 --platform linux/amd64,linux/arm64/v8 \
                 --output "type=image,push=true" \
