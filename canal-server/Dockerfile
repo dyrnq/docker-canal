@@ -46,5 +46,8 @@ RUN set -eux; \
 
     EXPOSE 11110 11111 11112 9100
 
+    COPY canal-server/docker-entrypoint.sh /usr/local/bin/
+    RUN ln -s /usr/local/bin/docker-entrypoint.sh /docker-entrypoint.sh
+
     WORKDIR /home/${user}/canal-server
     ENTRYPOINT ["/docker-entrypoint.sh"]

@@ -45,7 +45,7 @@ RUN set -eux; \
     if [ -f /home/${user}/canal-adapter/bin/startup.sh ]; then sed -i.bak -e "s@\$JAVA \$JAVA_OPTS@exec \$JAVA \$JAVA_OPTS@g" -e "s@1>>\$base.*&@@g" -e "s@1>>/dev/null.*&@@g" /home/${user}/canal-adapter/bin/startup.sh; fi
 
 
-    COPY docker-entrypoint.sh /usr/local/bin/
+    COPY canal-adapter/docker-entrypoint.sh /usr/local/bin/
     RUN ln -s /usr/local/bin/docker-entrypoint.sh /docker-entrypoint.sh
 
     WORKDIR /home/${user}/canal-adapter

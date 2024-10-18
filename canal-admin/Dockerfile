@@ -47,5 +47,8 @@ RUN set -eux; \
 
     EXPOSE 8089
 
+    COPY canal-admin/docker-entrypoint.sh /usr/local/bin/
+    RUN ln -s /usr/local/bin/docker-entrypoint.sh /docker-entrypoint.sh
+
     WORKDIR /home/${user}/canal-admin
     ENTRYPOINT ["/docker-entrypoint.sh"]
