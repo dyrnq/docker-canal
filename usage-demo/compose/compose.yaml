@@ -1,0 +1,229 @@
+services:
+  canal-admin-db:
+    # We use a mariadb image which supports both amd64 & arm64 architecture
+    # image: mariadb:10.6.4-focal
+    # If you really want to use MySQL, uncomment the following line
+    image: mysql:8.0.40
+    restart: always
+    volumes:
+      - canal-admin-db-data:/var/lib/mysql
+      - $HOME/sqls/admin-db:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_USER=canal
+      - MYSQL_PASSWORD=canal
+      - MYSQL_DATABASE=canal_manager
+      - MYSQL_ROOT_PASSWORD=666666
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-time-zone=+8:00
+      # - --default-authentication-plugin=mysql_native_password
+    ports:
+      - 23306:3306
+    networks:
+      canal:
+        aliases:
+          - canal-admin-db
+
+  canal-admin:
+    image: dyrnq/canal-admin:1.1.8-alpha-3-jdk11
+    restart: always
+    # volumes:
+    environment:
+      - spring.datasource.address=canal-admin-db:3306
+      - spring.datasource.database=canal_manager
+      - spring.datasource.username=canal
+      - spring.datasource.password=canal
+      - spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+      - spring.datasource.url=jdbc:mysql://canal-admin-db:3306/canal_manager?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+      - server.port=8090
+      - canal.adminUser=admin
+      - canal.adminPasswd=admin
+    ports:
+      - 18090:8090
+    networks:
+      canal:
+        aliases:
+          - canal-admin
+
+  zoo1:
+    image: zookeeper:3.8.0
+    restart: always
+    hostname: zoo1
+    ports:
+      - 12181:2181
+      - 18080:8080
+    volumes:
+      - "$HOME/var/lib/zoo/zoo1/data:/data"
+      - "$HOME/var/lib/zoo/zoo1/datalog:/datalog"
+      - "$HOME/var/lib/zoo/zoo1/logs:/logs"
+    environment:
+      ZOO_MY_ID: 1
+      ALLOW_ANONYMOUS_LOGIN: "yes"
+      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
+      ZOO_4LW_COMMANDS_WHITELIST: "*"
+    networks:
+      canal:
+        ipv4_address: 172.224.0.11
+
+  zoo2:
+    image: zookeeper:3.8.0
+    restart: always
+    hostname: zoo2
+    ports:
+      - 22181:2181
+      - 28080:8080
+    volumes:
+      - "$HOME/var/lib/zoo/zoo2/data:/data"
+      - "$HOME/var/lib/zoo/zoo2/datalog:/datalog"
+      - "$HOME/var/lib/zoo/zoo2/logs:/logs"
+    environment:
+      ZOO_MY_ID: 2
+      ALLOW_ANONYMOUS_LOGIN: "yes"
+      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
+      ZOO_4LW_COMMANDS_WHITELIST: "*"
+    networks:
+      canal:
+        ipv4_address: 172.224.0.12
+
+  zoo3:
+    image: zookeeper:3.8.0
+    restart: always
+    hostname: zoo3
+    ports:
+      - 32181:2181
+      - 38080:8080
+    volumes:
+      - "$HOME/var/lib/zoo/zoo3/data:/data"
+      - "$HOME/var/lib/zoo/zoo3/datalog:/datalog"
+      - "$HOME/var/lib/zoo/zoo3/logs:/logs"
+    environment:
+      JVMFLAGS: "-Xmx1024m"
+      ZOO_MY_ID: 3
+      ALLOW_ANONYMOUS_LOGIN: "yes"
+      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
+      ZOO_4LW_COMMANDS_WHITELIST: "*"
+    networks:
+      canal:
+        ipv4_address: 172.224.0.13
+  adminer:
+    image: adminer:4.8.1
+    ports:
+      - 11480:8080
+    restart: always
+    networks:
+      canal:
+        aliases:
+          - adminer
+  main-db:
+    image: mysql:8.0.40
+    restart: always
+    volumes:
+      - main-db-data:/var/lib/mysql
+      - $HOME/var/lib/mysql/config/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
+      - $HOME/sqls/main-db:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=666666
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-time-zone=+8:00
+      # - --default-authentication-plugin=mysql_native_password
+    ports:
+      - 33306:3306
+    networks:
+      canal:
+        aliases:
+          - main-db
+
+  main-db5:
+    image: mysql:5.7.44
+    restart: always
+    volumes:
+      - main-db5-data:/var/lib/mysql
+      - $HOME/var/lib/mysql/config/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
+      - $HOME/sqls/main-db:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=666666
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-time-zone=+8:00
+      # - --default-authentication-plugin=mysql_native_password
+    ports:
+      - 34306:3306
+    networks:
+      canal:
+        aliases:
+          - main5-db
+
+
+
+  cs1:
+    image: dyrnq/canal-server:1.1.8-alpha-3-jdk11
+    restart: always
+    volumes:
+      - "$HOME/var/lib/cs1/logs:/home/admin/canal-server/logs"
+    environment:
+      - canal.zkServers=zoo1:2181,zoo2:2181,zoo3:2181
+      - canal.admin.manager=canal-admin:8090
+      - canal.serverMode=rocketmq
+      - rocketmq.namesrv.addr=192.168.88.123:9876
+      - canal.instance.global.spring.xml=classpath:spring/default-instance.xml
+      - canal.admin.register.auto=true
+      - canal.admin.register.cluster=foo
+      - canal.admin.register.name=cs1
+      - canal.admin.user=admin
+      - canal.admin.passwd=4ACFE3202A5FF5CF467898FC58AAB1D615029441
+    networks:
+      canal:
+        ipv4_address: 172.224.0.145
+        aliases:
+          - cs1
+
+  cs2:
+    image: dyrnq/canal-server:1.1.8-alpha-3-jdk11
+    restart: always
+    volumes:
+      - "$HOME/var/lib/cs2/logs:/home/admin/canal-server/logs"
+    environment:
+      - canal.zkServers=zoo1:2181,zoo2:2181,zoo3:2181
+      - canal.serverMode=rocketmq
+      - rocketmq.namesrv.addr=192.168.88.123:9876
+      - canal.admin.manager=canal-admin:8090
+      - canal.instance.global.spring.xml=classpath:spring/default-instance.xml
+      - canal.admin.register.auto=true
+      - canal.admin.register.cluster=foo
+      - canal.admin.register.name=cs2
+      - canal.admin.user=admin
+      - canal.admin.passwd=4ACFE3202A5FF5CF467898FC58AAB1D615029441
+    networks:
+      canal:
+        ipv4_address: 172.224.0.155
+        aliases:
+          - cs2
+  zoonavigator:
+    image: elkozmon/zoonavigator:latest
+    restart: always
+    ports:
+      - 39000:9000
+    environment:
+      - HTTP_PORT=9000
+    networks:
+      canal:
+        #ipv4_address: IP_ADDRESS
+        aliases:
+          - zoonavigator
+
+
+volumes:
+  canal-admin-db-data:
+  main-db-data:
+  main-db5-data:
+
+networks:
+  canal:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.224.0.0/16
