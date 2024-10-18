@@ -3,8 +3,8 @@ FROM ${BASE_IMAGE}
 
 ARG user=admin
 ARG group=admin
-ARG uid=1001
-ARG gid=1001
+ARG uid=1000
+ARG gid=1000
 
 
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -34,6 +34,7 @@ RUN set -eux; \
     gosu \
     && \
     localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
+    ( if id ubuntu 2>/dev/null; then  userdel -r ubuntu; fi ) && \
     groupadd -g ${gid} ${group} && useradd -u ${uid} -g ${gid} -m -s /bin/bash ${user} && \
     mkdir -p /home/${user}/canal-server && \
     tar -xzvf /tmp/canal.deployer-*.tar.gz -C /home/${user}/canal-server && \
@@ -43,4 +44,4 @@ RUN set -eux; \
 
     EXPOSE 11110 11111 11112 9100
 
-    WORKDIR /home/${user}
+    WORKDIR /home/${user}/canal-server
