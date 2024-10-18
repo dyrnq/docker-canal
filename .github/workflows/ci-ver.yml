@@ -1,0 +1,177 @@
+name: ci-ver
+
+on:
+  # push:
+  #   branches: [ "main" ]
+  # pull_request:
+  #   branches: [ "main" ]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'version to build'
+        required: true
+        default: 'canal-1.1.8-alpha-3'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        base_img:
+        - "eclipse-temurin:8u422-b05-jdk-noble"
+        - "eclipse-temurin:17.0.12_7-jdk-noble"
+        - "eclipse-temurin:21.0.4_7-jdk-noble"
+        - "eclipse-temurin:11.0.24_8-jdk-noble"
+        m:
+        - "canal-server"
+        - "canal-admin"
+        - "canal-adapter"
+        # vers:
+        # - "canal-1.1.8-alpha-3"
+        # - "canal-1.1.8-alpha-2"
+        # - "canal-1.1.8-alpha-1"
+        # - "canal-1.1.7"
+        # - "canal-1.1.7-alpha-3"
+        # - "canal-1.1.7-alpha-2"
+        # - "canal-1.1.7-alpha-1"
+        # - "canal-1.1.6"
+        # - "canal-1.1.6-hotfix-1"
+        # - "canal-1.1.6-alpha-1"
+        # - "canal-1.1.5"
+        # - "canal-1.1.5-alpha-2"
+        # - "canal-1.1.5-alpha-1"
+        # - "canal-1.1.4"
+        # - "canal-1.1.4-alpha-2"
+        # - "canal-1.1.4-alpha-1"
+        # - "canal-1.1.3"
+        # - "canal-1.1.3-alpha-3"
+        # - "canal-1.1.3-alpha-2"
+        # - "canal-1.1.3-alpha-1"
+        # - "canal-1.1.2"
+        # - "canal-1.1.1"
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Set up QEMU
+        id: qemu
+        uses: docker/setup-qemu-action@v3
+      -
+        name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v3
+      -
+        name: Inspect builder
+        run: |
+          echo "Name:      ${{ steps.buildx.outputs.name }}"
+          echo "Endpoint:  ${{ steps.buildx.outputs.endpoint }}"
+          echo "Status:    ${{ steps.buildx.outputs.status }}"
+          echo "Flags:     ${{ steps.buildx.outputs.flags }}"
+          echo "Platforms: ${{ steps.buildx.outputs.platforms }}"
+
+      - name: Setup Maven Action
+        uses: s4u/setup-maven-action@v1.15.0
+        with:
+          java-version: 8
+          java-distribution: temurin
+          maven-version: 3.5.0
+      - name: echo mvn version
+        run: |
+            mvn --version
+
+      - name: Clone canal
+        run: |
+            git clone --branch ${{ matrix.vers }} --depth 1 https://github.com/alibaba/canal.git
+
+      - name: Build canal
+        run: |
+            pushd canal || exit 1
+                sed -i \
+                -e "s@http://repo1.maven.org/maven2@https://repo1.maven.org/maven2@g" \
+                -e "s@http://download.java.net/maven/2/@https://download.java.net/maven/2/@g" \
+                pom.xml
+                mvn clean package -Dmaven.test.skip -Denv=release
+            popd || exit 1
+      - name: Show canal build target
+        run: |
+            ls -la canal/target
+      - name: Build dockerfile (with no push)
+        run: |
+            echo "Build dockerfile (with no push)"
+            ver="${{ github.event.inputs.version }}"
+            ver="${ver/canal-/}"
+            echo "${ver}"
+            m="${{ matrix.m }}"
+
+            #for m in "canal-server" "canal-admin" "canal-adapter"; do
+
+            #for base_img in "eclipse-temurin:8u422-b05-jdk-noble" "eclipse-temurin:17.0.12_7-jdk-noble" "eclipse-temurin:21.0.4_7-jdk-noble" "eclipse-temurin:11.0.24_8-jdk-noble"; do
+                latest_tag="";
+                if [[ "${base_img}" =~ "eclipse-temurin:8u422" ]]; then
+                    latest_tag="${latest_tag} --tag dyrnq/${m}:${ver} --tag dyrnq/${m}:${ver}-jdk8"
+                fi
+                if [[ "${base_img}" =~ "eclipse-temurin:17" ]]; then
+                    latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk17"
+                fi
+                if [[ "${base_img}" =~ "eclipse-temurin:21" ]]; then
+                    latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk21"
+                fi
+                if [[ "${base_img}" =~ "eclipse-temurin:11" ]]; then
+                    latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk11"
+                fi
+
+                docker buildx build \
+                --platform linux/amd64,linux/arm64/v8 \
+                --output "type=image,push=false" \
+                --file ./${m}/Dockerfile . \
+                --build-arg BASE_IMAGE="${base_img}" \
+                ${latest_tag}
+
+            #done
+            #done
+
+
+
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build dockerfile (with push)
+        run: |
+            echo "Build dockerfile (with no push)"
+            ver="${{ github.event.inputs.version }}"
+            ver="${ver/canal-/}"
+            echo "${ver}"
+            m="${{ matrix.m }}"
+            base_img="${{matrix.base_img}}"
+
+            #for m in "canal-server" "canal-admin" "canal-adapter"; do
+
+            #for base_img in "eclipse-temurin:8u422-b05-jdk-noble" "eclipse-temurin:17.0.12_7-jdk-noble" "eclipse-temurin:21.0.4_7-jdk-noble" "eclipse-temurin:11.0.24_8-jdk-noble"; do
+                latest_tag="";
+                if [[ "${base_img}" =~ "eclipse-temurin:8u422" ]]; then
+                    latest_tag="${latest_tag} --tag dyrnq/${m}:${ver} --tag dyrnq/${m}:${ver}-jdk8"
+                fi
+                if [[ "${base_img}" =~ "eclipse-temurin:17" ]]; then
+                    latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk17"
+                fi
+                if [[ "${base_img}" =~ "eclipse-temurin:21" ]]; then
+                    latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk21"
+                fi
+                if [[ "${base_img}" =~ "eclipse-temurin:11" ]]; then
+                    latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk11"
+                fi
+
+                docker buildx build \
+                --platform linux/amd64,linux/arm64/v8 \
+                --output "type=image,push=true" \
+                --file ./${m}/Dockerfile . \
+                --build-arg BASE_IMAGE="${base_img}" \
+                ${latest_tag}
+
+            #done
+            #done
