@@ -32,6 +32,7 @@ RUN set -eux; \
     zip \
     jq \
     gosu \
+    file \
     && \
     localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
     ( if id ubuntu 2>/dev/null; then  userdel -r ubuntu; fi ) && \
@@ -40,8 +41,12 @@ RUN set -eux; \
     tar -xzvf /tmp/canal.admin-*.tar.gz -C /home/${user}/canal-admin && \
     rm -f /tmp/canal.admin-*.tar.gz && \
     chown -R ${uid}:${gid} /home/${user} && \
-    rm -rf /var/lib/apt/lists/*;
+    rm -rf /var/lib/apt/lists/*; \
+    if [ -f /home/${user}/canal-admin/bin/startup.sh ]; then sed -i.bak -e "s@\$JAVA \$JAVA_OPTS@exec gosu ${user} \$JAVA \$JAVA_OPTS@g" -e "s@1>>\$base.*&@@g" -e "s@1>>/dev/null.*&@@g" /home/${user}/canal-admin/bin/startup.sh; fi
+
 
     EXPOSE 8089
 
     WORKDIR /home/${user}/canal-admin
+
+    ENTRYPOINT ["bin/startup.sh"]
