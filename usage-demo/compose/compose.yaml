@@ -223,7 +223,9 @@ volumes:
 
 networks:
   canal:
-    driver: bridge
-    ipam:
-      config:
-      - subnet: 172.224.0.0/16
+    external: true
+
+    # driver: bridge
+    # ipam:
+    #   config:
+    #   - subnet: 172.224.0.0/16

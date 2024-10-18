@@ -33,6 +33,8 @@ is_detached() {
     fi
 }
 
+docker network inspect canal &>/dev/null || docker network create --subnet 172.224.0.0/16 --gateway 172.224.0.1 --driver bridge canal
+
 mkdir -p $HOME/sqls/admin-db
 mkdir -p $HOME/sqls/main-db
 
