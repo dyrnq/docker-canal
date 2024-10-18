@@ -100,6 +100,8 @@ jobs:
       - name: Build dockerfile (with no push)
         run: |
             echo "Build dockerfile (with no push)"
+            latest=$(cat latest);
+            echo $latest;
             ver="${{ github.event.inputs.version }}"
             ver="${ver/canal-/}"
             echo "${ver}"
@@ -112,6 +114,9 @@ jobs:
                 latest_tag="";
                 if [[ "${base_img}" =~ "eclipse-temurin:8u422" ]]; then
                     latest_tag="${latest_tag} --tag dyrnq/${m}:${ver} --tag dyrnq/${m}:${ver}-jdk8"
+                    if [ "$latest" = "${ver}"  ]; then
+                        latest_tag="${latest_tag} --tag dyrnq/${m}:latest"
+                    fi
                 fi
                 if [[ "${base_img}" =~ "eclipse-temurin:17" ]]; then
                     latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk17"
@@ -144,7 +149,9 @@ jobs:
 
       - name: Build dockerfile (with push)
         run: |
-            echo "Build dockerfile (with no push)"
+            echo "Build dockerfile (with push)"
+            latest=$(cat latest);
+            echo $latest;
             ver="${{ github.event.inputs.version }}"
             ver="${ver/canal-/}"
             echo "${ver}"
@@ -157,6 +164,9 @@ jobs:
                 latest_tag="";
                 if [[ "${base_img}" =~ "eclipse-temurin:8u422" ]]; then
                     latest_tag="${latest_tag} --tag dyrnq/${m}:${ver} --tag dyrnq/${m}:${ver}-jdk8"
+                    if [ "$latest" = "${ver}"  ]; then
+                        latest_tag="${latest_tag} --tag dyrnq/${m}:latest"
+                    fi
                 fi
                 if [[ "${base_img}" =~ "eclipse-temurin:17" ]]; then
                     latest_tag="${latest_tag} --tag dyrnq/${m}:${ver}-jdk17"
@@ -170,7 +180,7 @@ jobs:
 
                 docker buildx build \
                 --platform linux/amd64,linux/arm64/v8 \
-                --output "type=image,push=true" \
+                --output "type=image,push=false" \
                 --file ./${m}/Dockerfile . \
                 --build-arg BASE_IMAGE="${base_img}" \
                 ${latest_tag}
