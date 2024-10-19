@@ -52,6 +52,7 @@ canal-admin is the canal management web ui.
 | canal.adminUser/canal.adminPasswd | canal.adminUser/canal.adminPasswd  are canal-admin configuration.<br/><br/>canal.admin.user/canal.admin.passwd are canal-server configuration. <br/><br/>canal.admin.passwd need encryption see [alibaba/canal/wiki/Canal-Admin-ServerGuide#面向userpasswd的安全acl机制](https://github.com/alibaba/canal/wiki/Canal-Admin-ServerGuide#%E9%9D%A2%E5%90%91userpasswd%E7%9A%84%E5%AE%89%E5%85%A8acl%E6%9C%BA%E5%88%B6).<br/><br/>`canal.adminUser/canal.adminPasswd` and `canal.admin.user/canal.admin.passwd` need to match. |
 
 e.g.
+
 ```sql
 --- 密文的生成方式，请登录mysql，执行如下密文生成sql即可(记得去掉第一个首字母的星号)
 
@@ -80,12 +81,39 @@ canal-adapter is the canal client adapter.
 | startup.sh            | /home/admin/canal-adapter/bin/startup.sh                                                                                                        |
 | startup.sh github     | [client-adapter/launcher/src/main/bin/startup.sh](https://github.com/alibaba/canal/blob/master/client-adapter/launcher/src/main/bin/startup.sh) |
 
-
 ## HA
 
 prerequisites:
 
 - zookeeper.
+- mysql.
+
+### canal.instance.tsdb.enable=true
+
+HA must use mysql replace default h2 tsdb configuration.
+
+1. create mysql database canal_tsdb
+2. create table from [deployer/src/main/resources/spring/tsdb/sql/create_table.sql](https://github.com/alibaba/canal/blob/master/deployer/src/main/resources/spring/tsdb/sql/create_table.sql)
+3. update use mysql tsdb
+
+```bash
+canal.instance.tsdb.enable=true
+canal.instance.tsdb.url=jdbc:mysql://<IP>:3306/canal_tsdb?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+# canal.instance.tsdb.url=jdbc:mysql://<IP>:3306/canal_tsdb?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+canal.instance.tsdb.dbUsername=canal
+canal.instance.tsdb.dbPassword=canal
+canal.instance.tsdb.spring.xml=classpath:spring/tsdb/mysql-tsdb.xml
+```
+
+### canal.instance.global.spring.xml
+
+HA must use zookeeper, `canal.instance.global.spring.xml = classpath:spring/default-instance.xml` is using zookeeper, but not configed as default.
+
+```bash
+# canal.instance.global.spring.xml = classpath:spring/memory-instance.xml
+# canal.instance.global.spring.xml = classpath:spring/file-instance.xml
+canal.instance.global.spring.xml = classpath:spring/default-instance.xml
+```
 
 ### HA with canal-admin
 
@@ -103,7 +131,6 @@ prerequisites:
 2. keep the `canal.properties` configs same.
 3. config instance configs for all the canal-server.
 4. run canal-server.
-
 
 ### k8s
 
