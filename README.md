@@ -21,16 +21,18 @@ These images have the following features:
 
 canal-server is the canal server.
 
-| Matters               | Description                                                                                                       |
-|-----------------------|-------------------------------------------------------------------------------------------------------------------|
-| Image name            | [dyrnq/canal-server](https://hub.docker.com/r/dyrnq/canal-server/tags)                                            |
-| Container entry point | /docker-entrypoint.sh                                                                                             |
-| working dir           | /home/admin/canal-server                                                                                          |
-| working uid/gid       | 1000/1000                                                                                                         |
-| working user/group    | admin/admin                                                                                                       |
-| startup.sh            | /home/admin/canal-server/bin/startup.sh                                                                           |
-| startup.sh github     | [deployer/src/main/bin/startup.sh](https://github.com/alibaba/canal/blob/master/deployer/src/main/bin/startup.sh) |
-
+| Matters                          | Description                                                                                                                         |
+|----------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
+| Image name                       | [dyrnq/canal-server](https://hub.docker.com/r/dyrnq/canal-server/tags)                                                              |
+| Container entry point            | /docker-entrypoint.sh                                                                                                               |
+| working dir                      | /home/admin/canal-server                                                                                                            |
+| working uid/gid                  | 1000/1000                                                                                                                           |
+| working user/group               | admin/admin                                                                                                                         |
+| startup.sh                       | /home/admin/canal-server/bin/startup.sh                                                                                             |
+| startup.sh github                | [deployer/src/main/bin/startup.sh](https://github.com/alibaba/canal/blob/master/deployer/src/main/bin/startup.sh)                   |
+| conf/canal.properties            | canal running full config                                                                                                           |
+| conf/canal_local.properties      | canal running partial configuration ( work with canal-admin)                                                                        |
+| conf/example/instance.properties | [example/instance.properties](https://github.com/alibaba/canal/blob/master/deployer/src/main/resources/example/instance.properties) |
 
 ## canal-admin
 
