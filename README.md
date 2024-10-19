@@ -1,6 +1,6 @@
 # docker-canal
 
-[cannel](https://github.com/alibaba/canal) is Alibaba's open source distributed database incremental subscription & consumption component. Based on long connections, it supports incremental data subscription and consumption, and also provides database incremental subscription and consumption based on the MySQL protocol.
+[canal](https://github.com/alibaba/canal) is Alibaba's open source distributed database incremental subscription & consumption component. Based on long connections, it supports incremental data subscription and consumption, and also provides database incremental subscription and consumption based on the MySQL protocol.
 
 - canal-server is the canal server.
 - canal-admin is the canal management web ui.
@@ -81,7 +81,7 @@ canal-adapter is the canal client adapter.
 
 ## HA
 
-prefabrication conditions:
+prerequisites:
 
 - zookeeper.
 
