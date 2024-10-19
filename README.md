@@ -79,6 +79,29 @@ canal-adapter is the canal client adapter.
 | startup.sh github     | [client-adapter/launcher/src/main/bin/startup.sh](https://github.com/alibaba/canal/blob/master/client-adapter/launcher/src/main/bin/startup.sh) |
 
 
+## HA
+
+prefabrication conditions:
+
+- zookeeper.
+
+### HA with canal-admin
+
+1. run canal-admin.
+2. login canal-admin with user/password.
+3. create cluster.
+4. config main config for the cluster which step 3 created.
+5. modify the main config which step 4 created. some key configs e.g. `canal.zkServers = zoo1:2181,zoo2:2181,zoo3:2181` `canal.serverMode = rocketMQ` `rocketmq.namesrv.addr = 192.168.88.123:9876`
+6. add instance config and modify instance config. some key configs e.g. `canal.instance.master.address=main-db5:3306`
+7. run canal-server with *local* parameter. see [canal_local.properties](https://github.com/alibaba/canal/wiki/Canal-Admin-ServerGuide#%E5%8F%98%E5%8C%96%E7%82%B9)
+
+### HA without canal-admin
+
+1. configs all `canal.properties` for all the canal-server. see [canal.properties](https://github.com/alibaba/canal/blob/master/deployer/src/main/resources/canal.properties). 
+2. keep the `canal.properties` configs same.
+3. config instance configs for all the canal-server.
+4. run canal-server.
+
 ## ref
 
 - [alibaba/canal](https://github.com/alibaba/canal)
