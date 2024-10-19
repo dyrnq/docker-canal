@@ -122,6 +122,19 @@ server_id=1 # 配置 MySQL replaction 需要定义，不要和 canal 的 slaveId
 EOF
 
 
+cat >$HOME/var/logback.xml<<'EOF'
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>
+EOF
 
 if is_detached; then
     docker compose up -d

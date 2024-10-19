@@ -28,8 +28,10 @@ services:
   canal-admin:
     image: dyrnq/canal-admin:1.1.8-alpha-3-jdk21
     restart: always
-    # volumes:
+    volumes:
+      - "$HOME/var/logback.xml:/home/admin/canal-admin/conf/logback.xml"
     environment:
+      - TZ=Asia/Shanghai
       - JAVA_OPTS=-XX:+IgnoreUnrecognizedVMOptions
       - spring.datasource.address=canal-admin-db:3306
       - spring.datasource.database=canal_manager
@@ -164,8 +166,9 @@ services:
     image: dyrnq/canal-server:1.1.8-alpha-3-jdk21
     restart: always
     volumes:
-      - "$HOME/var/lib/cs1/logs:/home/admin/canal-server/logs"
+      - "$HOME/var/logback.xml:/home/admin/canal-server/conf/logback.xml"
     environment:
+      - TZ=Asia/Shanghai
       - JAVA_OPTS=-XX:+IgnoreUnrecognizedVMOptions
       - canal.admin.manager=canal-admin:8090
       - canal.admin.register.auto=true
@@ -185,7 +188,7 @@ services:
     image: dyrnq/canal-server:1.1.8-alpha-3-jdk21
     restart: always
     volumes:
-      - "$HOME/var/lib/cs2/logs:/home/admin/canal-server/logs"
+      - "$HOME/var/logback.xml:/home/admin/canal-server/conf/logback.xml"
     environment:
       - JAVA_OPTS=-XX:+IgnoreUnrecognizedVMOptions
       - canal.admin.manager=canal-admin:8090

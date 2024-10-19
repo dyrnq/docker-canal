@@ -2,6 +2,26 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: canal-logback
+  labels:
+    app: canal-demo
+data:
+  logback.xml: |
+    <configuration>
+        <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            </encoder>
+        </appender>
+
+        <root level="info">
+            <appender-ref ref="STDOUT" />
+        </root>
+    </configuration>
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
   name: canal-config
   labels:
     app: canal-demo
@@ -352,6 +372,10 @@ spec:
               mountPath: /home/admin/canal-server/conf/example/instance.properties
               subPath: instance.properties
               readOnly: true
+            - name: canal-logback
+              mountPath: /home/admin/canal-server/conf/logback.xml
+              subPath: logback.xml
+              readOnly: true
       volumes:
         - name: canal-instance-config
           configMap:
@@ -359,7 +383,9 @@ spec:
         - name: canal-config
           configMap:
             name: canal-config
-
+        - name: canal-logback
+          configMap:
+            name: canal-logback
 ---
 apiVersion: apps/v1
 kind: Deployment
