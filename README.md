@@ -36,16 +36,33 @@ canal-server is the canal server.
 
 canal-admin is the canal management web ui.
 
-| Matters               | Description                                                                                                                     |
-|-----------------------|---------------------------------------------------------------------------------------------------------------------------------|
-| Image name            | [dyrnq/canal-admin](https://hub.docker.com/r/dyrnq/canal-admin/tags)                                                           |
-| Container entry point | /docker-entrypoint.sh                                                                                                           |
-| working dir           | /home/admin/canal-admin                                                                                                         |
-| working uid/gid       | 1000/1000                                                                                                                       |
-| working user/group    | admin/admin                                                                                                                     |
-| startup.sh            | /home/admin/canal-admin/bin/startup.sh                                                                                          |
-| startup.sh github     | [admin/admin-web/src/main/bin/startup.sh](https://github.com/alibaba/canal/blob/master/admin/admin-web/src/main/bin/startup.sh) |
-| sql file              | [canal_manager.sql](https://github.com/alibaba/canal/blob/master/docker/image/canal_manager.sql)                                |
+| Matters                           | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+|-----------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Image name                        | [dyrnq/canal-admin](https://hub.docker.com/r/dyrnq/canal-admin/tags)                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Container entry point             | /docker-entrypoint.sh                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| working dir                       | /home/admin/canal-admin                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| working uid/gid                   | 1000/1000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| working user/group                | admin/admin                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| startup.sh                        | /home/admin/canal-admin/bin/startup.sh                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| startup.sh github                 | [admin/admin-web/src/main/bin/startup.sh](https://github.com/alibaba/canal/blob/master/admin/admin-web/src/main/bin/startup.sh)                                                                                                                                                                                                                                                                                                                                                                                      |
+| sql file                          | [canal_manager.sql](https://github.com/alibaba/canal/blob/master/docker/image/canal_manager.sql)                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| web login default user/passwd     | admin/123456                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| canal.adminUser/canal.adminPasswd | canal.adminUser/canal.adminPasswd  are canal-admin configuration.<br/><br/>canal.admin.user/canal.admin.passwd are canal-server configuration. <br/><br/>canal.admin.passwd need encryption see [alibaba/canal/wiki/Canal-Admin-ServerGuide#面向userpasswd的安全acl机制](https://github.com/alibaba/canal/wiki/Canal-Admin-ServerGuide#%E9%9D%A2%E5%90%91userpasswd%E7%9A%84%E5%AE%89%E5%85%A8acl%E6%9C%BA%E5%88%B6).<br/><br/>`canal.adminUser/canal.adminPasswd` and `canal.admin.user/canal.admin.passwd` need to match. |
+
+e.g.
+```sql
+--- 密文的生成方式，请登录mysql，执行如下密文生成sql即可(记得去掉第一个首字母的星号)
+
+select password('admin')
+
++-------------------------------------------+
+| password('admin')                         |
++-------------------------------------------+
+| *4ACFE3202A5FF5CF467898FC58AAB1D615029441 |
++-------------------------------------------+
+
+--- 如果遇到mysql8.0，可以使用select upper(sha1(unhex(sha1('admin'))))
+```
 
 ## canal-adapter
 
