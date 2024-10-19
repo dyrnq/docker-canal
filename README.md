@@ -92,7 +92,7 @@ prerequisites:
 3. create cluster.
 4. config main config for the cluster which step 3 created.
 5. modify the main config which step 4 created. some key configs e.g. `canal.zkServers = zoo1:2181,zoo2:2181,zoo3:2181` `canal.serverMode = rocketMQ` `rocketmq.namesrv.addr = 192.168.88.123:9876`
-6. add instance config and modify instance config. some key configs e.g. `canal.instance.master.address=main-db5:3306`
+6. add instance config and modify instance config. some key configs e.g. `canal.instance.master.address=main-db5:3306` `canal.instance.mysql.slaveId=`
 7. run canal-server with *local* parameter. see [canal_local.properties](https://github.com/alibaba/canal/wiki/Canal-Admin-ServerGuide#%E5%8F%98%E5%8C%96%E7%82%B9)
 
 ### HA without canal-admin
