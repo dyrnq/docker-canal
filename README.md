@@ -3,7 +3,7 @@
 [cannel](https://github.com/alibaba/canal) is Alibaba's open source distributed database incremental subscription & consumption component. Based on long connections, it supports incremental data subscription and consumption, and also provides database incremental subscription and consumption based on the MySQL protocol.
 
 - canal-server is the canal server.
-- canal-admin is the canal management end.
+- canal-admin is the canal management web ui.
 - canal-adapter is the canal client adapter.
 
 This project builds the docker images of each component of cannel and sorts out the related usage.
@@ -14,7 +14,7 @@ These images have the following features:
 - build with jdk8, jdk11, jdk17, jdk21.
 - use gosu running that admin user which uid is 1000 and gid 1000.
 - follow the image building principle and one container only does one thing, the last run java with pid=1(minor surgery on the original bin/startup.sh).
-- supported version >=1.1.4. see tags [dyrnq/canal-server/tags](https://hub.docker.com/r/dyrnq/canal-server/tags)
+- supported version >=1.1.4. see tags [dyrnq/canal-server/tags](https://hub.docker.com/r/dyrnq/canal-server/tags).
 - Note that these images is not an official mirror.
 
 ## canal-server
@@ -34,7 +34,7 @@ canal-server is the canal server.
 
 ## canal-admin
 
-canal-admin is the canal management webui.
+canal-admin is the canal management web ui.
 
 | Matters               | Description                                                                                                                     |
 |-----------------------|---------------------------------------------------------------------------------------------------------------------------------|
