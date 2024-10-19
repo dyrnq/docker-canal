@@ -165,16 +165,14 @@ services:
     volumes:
       - "$HOME/var/lib/cs1/logs:/home/admin/canal-server/logs"
     environment:
-      - canal.zkServers=zoo1:2181,zoo2:2181,zoo3:2181
       - canal.admin.manager=canal-admin:8090
-      - canal.serverMode=rocketmq
-      - rocketmq.namesrv.addr=192.168.88.123:9876
-      - canal.instance.global.spring.xml=classpath:spring/default-instance.xml
       - canal.admin.register.auto=true
       - canal.admin.register.cluster=foo
       - canal.admin.register.name=cs1
       - canal.admin.user=admin
       - canal.admin.passwd=4ACFE3202A5FF5CF467898FC58AAB1D615029441
+    command:
+      - local
     networks:
       canal:
         ipv4_address: 172.224.0.145
@@ -187,16 +185,14 @@ services:
     volumes:
       - "$HOME/var/lib/cs2/logs:/home/admin/canal-server/logs"
     environment:
-      - canal.zkServers=zoo1:2181,zoo2:2181,zoo3:2181
-      - canal.serverMode=rocketmq
-      - rocketmq.namesrv.addr=192.168.88.123:9876
       - canal.admin.manager=canal-admin:8090
-      - canal.instance.global.spring.xml=classpath:spring/default-instance.xml
       - canal.admin.register.auto=true
       - canal.admin.register.cluster=foo
       - canal.admin.register.name=cs2
       - canal.admin.user=admin
       - canal.admin.passwd=4ACFE3202A5FF5CF467898FC58AAB1D615029441
+    command:
+      - local
     networks:
       canal:
         ipv4_address: 172.224.0.155
