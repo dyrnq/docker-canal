@@ -44,6 +44,7 @@ RUN set -eux; \
     rm -rf /var/lib/apt/lists/*; \
     if [ -f /home/${user}/canal-adapter/bin/startup.sh ]; then sed -i.bak -e "s@\$JAVA \$JAVA_OPTS@exec \$JAVA \$JAVA_OPTS@g" -e "s@1>>\$base.*&@@g" -e "s@1>>/dev/null.*&@@g" /home/${user}/canal-adapter/bin/startup.sh; fi
 
+    EXPOSE 8081
 
     COPY canal-adapter/docker-entrypoint.sh /usr/local/bin/
     RUN ln -s /usr/local/bin/docker-entrypoint.sh /docker-entrypoint.sh
