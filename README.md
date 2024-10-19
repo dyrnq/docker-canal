@@ -30,7 +30,7 @@ canal-server is the canal server.
 | working user/group               | admin/admin                                                                                                                         |
 | startup.sh                       | /home/admin/canal-server/bin/startup.sh                                                                                             |
 | startup.sh github                | [deployer/src/main/bin/startup.sh](https://github.com/alibaba/canal/blob/master/deployer/src/main/bin/startup.sh)                   |
-| conf/canal.properties            | canal running full config                                                                                                           |
+| conf/canal.properties            | canal running full configuration                                                                                                    |
 | conf/canal_local.properties      | canal running partial configuration ( work with canal-admin)                                                                        |
 | conf/example/instance.properties | [example/instance.properties](https://github.com/alibaba/canal/blob/master/deployer/src/main/resources/example/instance.properties) |
 
@@ -103,6 +103,11 @@ prerequisites:
 2. keep the `canal.properties` configs same.
 3. config instance configs for all the canal-server.
 4. run canal-server.
+
+
+### k8s
+
+In k8s, using a shared configmap(canal.properties) to configure each canal-server the same, it doesn't seem necessary deploy the `canal-admin` module(to be verified).
 
 ## ref
 
