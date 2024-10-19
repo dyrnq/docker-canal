@@ -26,10 +26,11 @@ services:
           - canal-admin-db
 
   canal-admin:
-    image: dyrnq/canal-admin:1.1.8-alpha-3-jdk11
+    image: dyrnq/canal-admin:1.1.8-alpha-3-jdk21
     restart: always
     # volumes:
     environment:
+      - JAVA_OPTS=-XX:+IgnoreUnrecognizedVMOptions
       - spring.datasource.address=canal-admin-db:3306
       - spring.datasource.database=canal_manager
       - spring.datasource.username=canal
@@ -160,11 +161,12 @@ services:
 
 
   cs1:
-    image: dyrnq/canal-server:1.1.8-alpha-3-jdk11
+    image: dyrnq/canal-server:1.1.8-alpha-3-jdk21
     restart: always
     volumes:
       - "$HOME/var/lib/cs1/logs:/home/admin/canal-server/logs"
     environment:
+      - JAVA_OPTS=-XX:+IgnoreUnrecognizedVMOptions
       - canal.admin.manager=canal-admin:8090
       - canal.admin.register.auto=true
       - canal.admin.register.cluster=foo
@@ -180,11 +182,12 @@ services:
           - cs1
 
   cs2:
-    image: dyrnq/canal-server:1.1.8-alpha-3-jdk11
+    image: dyrnq/canal-server:1.1.8-alpha-3-jdk21
     restart: always
     volumes:
       - "$HOME/var/lib/cs2/logs:/home/admin/canal-server/logs"
     environment:
+      - JAVA_OPTS=-XX:+IgnoreUnrecognizedVMOptions
       - canal.admin.manager=canal-admin:8090
       - canal.admin.register.auto=true
       - canal.admin.register.cluster=foo
