@@ -41,6 +41,24 @@ mkdir -p $HOME/sqls/main-db
 curl -fSL -# -O --retry 10 https://ghp.ci/https://github.com/alibaba/canal/raw/master/docker/image/canal_manager.sql
 mv -f -v canal_manager.sql $HOME/sqls/admin-db
 
+
+curl -fSL -# -O --retry 10 https://ghp.ci/https://github.com/alibaba/canal/blob/master/deployer/src/main/resources/spring/tsdb/sql/create_table.sql
+
+cat <(cat <<'EOF'
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `canal_tsdb` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_bin */;
+
+USE `canal_tsdb`;
+GRANT ALL PRIVILEGES ON `canal\_tsdb`.* TO `canal`@`%`;
+GRANT ALL PRIVILEGES ON `canal\_manager`.* TO `canal`@`%`;
+
+FLUSH PRIVILEGES;
+SHOW GRANTS FOR 'canal'@'%';
+SET NAMES utf8;
+EOF
+) create_table.sql > $HOME/sqls/admin-db/canal_tsdb.sql
+rm -rf create_table.sql
+
+
 cat > $HOME/sqls/main-db/init.sql <<EOF
 CREATE USER canal IDENTIFIED BY 'canal';
 GRANT SELECT, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'canal'@'%';

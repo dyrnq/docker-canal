@@ -11,7 +11,6 @@ services:
     environment:
       - MYSQL_USER=canal
       - MYSQL_PASSWORD=canal
-      - MYSQL_DATABASE=canal_manager
       - MYSQL_ROOT_PASSWORD=666666
     command:
       - --character-set-server=utf8mb4
