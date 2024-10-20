@@ -50,12 +50,12 @@ data:
     #canal.admin.register.cluster =
     #canal.admin.register.name =
 
-    canal.zkServers = __CANAL_ZK__
+    canal.zkServers =
     # flush data to zk
     canal.zookeeper.flush.period = 1000
     canal.withoutNetty = false
     # tcp, kafka, rocketMQ, rabbitMQ, pulsarMQ
-    canal.serverMode = rocketMQ
+    canal.serverMode = tcp
     # flush meta cursor/parse position to file
     canal.file.data.dir = ${canal.conf.dir}
     canal.file.flush.period = 1000
@@ -357,7 +357,14 @@ spec:
                   fieldPath: metadata.namespace
             - name: canal.register.ip
               value: $(POD_NAME).canal-server-headless.$(NAMESPACE).svc.cluster.local
-
+            - name: canal.zkServers
+              value: zookeeper-0.zookeeper-headless.default.svc.cluster.local:2181,zookeeper-1.zookeeper-headless.default.svc.cluster.local:2181,zookeeper-2.zookeeper-headless.default.svc.cluster.local:2181
+            - name: canal.instance.global.spring.xml
+              value: classpath:spring/default-instance.xml
+            - name: canal.serverMode
+              value: rocketMQ
+            - name: canal.instance.tsdb.enable
+              value: "true"
           ports:
             - containerPort: 11110
               name: tcp-11110
