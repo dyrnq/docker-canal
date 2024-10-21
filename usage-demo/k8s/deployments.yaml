@@ -330,7 +330,7 @@ data:
   instance.properties: |
     #################################################
     ## mysql serverId , v1.0.26+ will autoGen
-    # canal.instance.mysql.slaveId=0
+    canal.instance.mysql.slaveId=6666666
 
     # enable gtid use true/false
     canal.instance.gtidon=false
