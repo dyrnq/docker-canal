@@ -35,13 +35,16 @@ is_detached() {
 
 docker network inspect canal &>/dev/null || docker network create --subnet 172.224.0.0/16 --gateway 172.224.0.1 --driver bridge canal
 
-mkdir -p $HOME/sqls/admin-db
-mkdir -p $HOME/sqls/main-db
+mkdir -p "${HOME}"/sqls/admin-db
+mkdir -p "${HOME}"/sqls/main-db
+mkdir -p "${HOME}"/var/lib/canal-admin-foo
 
 curl -fSL -# -O --retry 10 https://ghp.ci/https://github.com/alibaba/canal/raw/master/docker/image/canal_manager.sql
-mv -f -v canal_manager.sql $HOME/sqls/admin-db
-cp -f -v $SCRIPT_DIR/canal_manager_foo.sql $HOME/sqls/admin-db
+mv -f -v canal_manager.sql "${HOME}"/sqls/admin-db
 
+cp -f -v "${SCRIPT_DIR}"/foo.sh "${HOME}"/var/lib/canal-admin-foo/foo.sh
+cp -f -v "${SCRIPT_DIR}"/canal.properties "${HOME}"/var/lib/canal-admin-foo/canal.properties
+cp -f -v "${SCRIPT_DIR}"/instance.properties "${HOME}"/var/lib/canal-admin-foo/instance.properties
 
 curl -fSL -# -O --retry 10 https://ghp.ci/https://github.com/alibaba/canal/blob/master/deployer/src/main/resources/spring/tsdb/sql/create_table.sql
 
@@ -56,18 +59,18 @@ FLUSH PRIVILEGES;
 SHOW GRANTS FOR 'canal'@'%';
 SET NAMES utf8;
 EOF
-) create_table.sql > $HOME/sqls/admin-db/canal_tsdb.sql
+) create_table.sql > "${HOME}"/sqls/admin-db/canal_tsdb.sql
 rm -rf create_table.sql
 
 
-cat > $HOME/sqls/main-db/init.sql <<EOF
+cat > "${HOME}"/sqls/main-db/init.sql <<EOF
 CREATE USER canal IDENTIFIED BY 'canal';
 GRANT SELECT, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'canal'@'%';
 -- GRANT ALL PRIVILEGES ON *.* TO 'canal'@'%' ;
 FLUSH PRIVILEGES;
 EOF
 
-cat > $HOME/sqls/main-db/mytest2.sql <<'EOF'
+cat > "${HOME}"/sqls/main-db/mytest2.sql <<'EOF'
 CREATE DATABASE /*!32312 IF NOT EXISTS*/ `mytest2` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_bin */;
 USE `mytest2`;
 SET NAMES utf8;
@@ -122,18 +125,18 @@ EOF
 
 
 
-mkdir -p $HOME/var/lib/zoo/zoo1/{datalog,data,logs}
-mkdir -p $HOME/var/lib/zoo/zoo2/{datalog,data,logs}
-mkdir -p $HOME/var/lib/zoo/zoo3/{datalog,data,logs}
+mkdir -p "${HOME}"/var/lib/zoo/zoo1/{datalog,data,logs}
+mkdir -p "${HOME}"/var/lib/zoo/zoo2/{datalog,data,logs}
+mkdir -p "${HOME}"/var/lib/zoo/zoo3/{datalog,data,logs}
 
-mkdir -p $HOME/var/lib/cs1/logs
-mkdir -p $HOME/var/lib/cs2/logs
-mkdir -p $HOME/var/lib/cs3/logs
+mkdir -p "${HOME}"/var/lib/cs1/logs
+mkdir -p "${HOME}"/var/lib/cs2/logs
+mkdir -p "${HOME}"/var/lib/cs3/logs
 
 
-mkdir -p $HOME/var/lib/mysql/config
+mkdir -p "${HOME}"/var/lib/mysql/config
 
-cat > $HOME/var/lib/mysql/config/mysqld.cnf <<EOF
+cat > "${HOME}"/var/lib/mysql/config/mysqld.cnf <<EOF
 [mysqld]
 log-bin=mysql-bin # 开启 binlog
 binlog-format=ROW # 选择 ROW 模式
@@ -141,7 +144,7 @@ server_id=1 # 配置 MySQL replaction 需要定义，不要和 canal 的 slaveId
 EOF
 
 
-cat >$HOME/var/logback.xml<<'EOF'
+cat >"${HOME}"/var/logback.xml<<'EOF'
 <configuration>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -160,3 +163,5 @@ if is_detached; then
 else
     docker compose up
 fi
+
+http

@@ -215,7 +215,16 @@ services:
         #ipv4_address: IP_ADDRESS
         aliases:
           - zoonavigator
-
+  canal-admin-foo:
+    image: ubuntu:jammy
+    restart: always
+    volumes:
+      - "$HOME/var/lib/canal-admin-foo:/data"
+    command:
+      - /bin/bash
+      - /data/foo.sh
+    networks:
+      canal:
 
 volumes:
   canal-admin-db-data:
