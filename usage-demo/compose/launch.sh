@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 
-
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null 2>&1 && pwd -P)
 
 DETACHED=${DETACHED:-}
 while [ $# -gt 0 ]; do
@@ -40,6 +40,7 @@ mkdir -p $HOME/sqls/main-db
 
 curl -fSL -# -O --retry 10 https://ghp.ci/https://github.com/alibaba/canal/raw/master/docker/image/canal_manager.sql
 mv -f -v canal_manager.sql $HOME/sqls/admin-db
+cp -f -v $SCRIPT_DIR/canal_manager_foo.sql $HOME/sqls/admin-db
 
 
 curl -fSL -# -O --retry 10 https://ghp.ci/https://github.com/alibaba/canal/blob/master/deployer/src/main/resources/spring/tsdb/sql/create_table.sql
