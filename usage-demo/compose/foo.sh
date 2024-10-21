@@ -3,7 +3,7 @@
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null 2>&1 && pwd -P)
 api_host="http://127.0.0.1:18090"
 
-if [ "$(ps -o ppid= -p 1|xargs)" = "0" ]; then
+if [ "$(ps -o ppid= -p $$|xargs)" = "0" ]; then
     echo "Running in a container (PID 1)"
 
 
@@ -52,6 +52,6 @@ http -j --ignore-stdin --verbose --session /tmp/canal.admin.session PUT $cluster
 
 http -j --ignore-stdin --verbose --session /tmp/canal.admin.session PUT $instance_api clusterServerId=cluster:1 name=test content=@"${SCRIPT_DIR}"/instance.properties X-Token:"${token}"
 
-if [ "$(ps -o ppid= -p 1|xargs)" = "0" ]; then
+if [ "$(ps -o ppid= -p $$|xargs)" = "0" ]; then
   tail -f /dev/null
 fi
