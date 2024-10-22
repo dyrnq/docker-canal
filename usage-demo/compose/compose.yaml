@@ -27,6 +27,9 @@ services:
   canal-admin:
     image: dyrnq/canal-admin:1.1.8-alpha-3-jdk21
     restart: always
+    depends_on:
+      canal-admin-db:
+        condition: service_started
     volumes:
       - "$HOME/var/logback.xml:/home/admin/canal-admin/conf/logback.xml"
     environment:
@@ -37,7 +40,7 @@ services:
       - spring.datasource.username=canal
       - spring.datasource.password=canal
       - spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-      - spring.datasource.url=jdbc:mysql://canal-admin-db:3306/canal_manager?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+      - spring.datasource.url=jdbc:mysql://canal-admin-db:3306/canal_manager?useUnicode=true&characterEncoding=utf8&useSSL=false&autoReconnect=true&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
       - server.port=8090
       - canal.adminUser=admin
       - canal.adminPasswd=admin
@@ -130,6 +133,8 @@ services:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
       - --default-time-zone=+8:00
+      - --binlog-row-image=FULL
+      - --binlog-row-metadata=FULL
       # - --default-authentication-plugin=mysql_native_password
     ports:
       - 33306:3306
@@ -218,11 +223,12 @@ services:
   canal-admin-foo:
     image: ubuntu:jammy
     restart: always
+    depends_on:
+      canal-admin:
+        condition: service_started
     volumes:
       - "$HOME/var/lib/canal-admin-foo:/data"
-    command:
-      - /bin/bash
-      - /data/foo.sh
+    entrypoint: [ "/data/foo.sh" ]
     networks:
       canal:
 
