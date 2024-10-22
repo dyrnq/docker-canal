@@ -236,7 +236,8 @@ services:
     image: dyrnq/canal-adapter:1.1.8-alpha-3-jdk21
     restart: always
     volumes:
-      - "$HOME/var/logback.xml:/home/admin/canal-adapter/conf/logback.xml"
+      - "$HOME/var/lib/ca1/logs:/home/admin/canal-adapter/logs"
+    #   - "$HOME/var/logback.xml:/home/admin/canal-adapter/conf/logback.xml"
     environment:
       - TZ=Asia/Shanghai
       - JAVA_OPTS=-XX:+IgnoreUnrecognizedVMOptions

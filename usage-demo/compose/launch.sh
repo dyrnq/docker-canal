@@ -140,7 +140,7 @@ mkdir -p "${HOME}"/var/lib/zoo/zoo3/{datalog,data,logs}
 mkdir -p "${HOME}"/var/lib/cs1/logs
 mkdir -p "${HOME}"/var/lib/cs2/logs
 mkdir -p "${HOME}"/var/lib/cs3/logs
-
+mkdir -p "${HOME}"/var/lib/ca1/logs
 
 mkdir -p "${HOME}"/var/lib/mysql/config
 
