@@ -194,6 +194,7 @@ services:
     volumes:
       - "$HOME/var/logback.xml:/home/admin/canal-server/conf/logback.xml"
     environment:
+      - TZ=Asia/Shanghai
       - JAVA_OPTS=-XX:+IgnoreUnrecognizedVMOptions
       - canal.admin.manager=canal-admin:8090
       - canal.admin.register.auto=true
@@ -235,11 +236,18 @@ services:
     image: dyrnq/canal-adapter:1.1.8-alpha-3-jdk21
     restart: always
     volumes:
-      - "$HOME/var/logback.xml:/home/admin/canal-server/conf/logback.xml"
+      - "$HOME/var/logback.xml:/home/admin/canal-adapter/conf/logback.xml"
     environment:
+      - TZ=Asia/Shanghai
       - JAVA_OPTS=-XX:+IgnoreUnrecognizedVMOptions
       - canal.conf.mode=rocketMQ
       - canal.conf.consumerProperties.rocketmq.namesrv.addr=192.168.88.123:9876
+      - CANAL_CONF_CANALADAPTERS[0]_INSTANCE=example
+      - CANAL_CONF_CANALADAPTERS[0]_GROUPS[0]_GROUPID=g1
+      - CANAL_CONF_CANALADAPTERS[0]_GROUPS[0]_OUTERADAPTERS[0]_NAME=logger
+      - CANAL_CONF_CANALADAPTERS[1]_INSTANCE=mytest2_stuff
+      - CANAL_CONF_CANALADAPTERS[1]_GROUPS[0]_GROUPID=mytest2_stuff
+      - CANAL_CONF_CANALADAPTERS[1]_GROUPS[0]_OUTERADAPTERS[0]_NAME=logger
     networks:
       canal:
         ipv4_address: 172.224.0.139
