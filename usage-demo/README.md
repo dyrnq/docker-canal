@@ -29,6 +29,8 @@ cd compose
 
 ```
 
+![architecture](https://a.dyrnq.com/2024-10-22_21-49.png "architecture diagram")
+
 ## k8s
 
 k8s部署的集群并不包含canal-admin服务,直接使用k8s中的configmap共享配置
@@ -40,7 +42,6 @@ cd k8s
 ./launch.sh
 
 ```
-
 
 ## 注意事项
 
