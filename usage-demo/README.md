@@ -13,6 +13,7 @@ compose为包含了
 - main-db5 （mysql master，版本为mysql:5.7.44）
 - adminer（mysql web管理界面）
 - canal-admin-foo（canal-admin的foo集群初始化以及配置初始化）
+- canal-adapter（ca1）
 
 ```bash
 cd compose

@@ -231,6 +231,20 @@ services:
     entrypoint: [ "/data/foo.sh" ]
     networks:
       canal:
+  ca1:
+    image: dyrnq/canal-adapter:1.1.8-alpha-3-jdk21
+    restart: always
+    volumes:
+      - "$HOME/var/logback.xml:/home/admin/canal-server/conf/logback.xml"
+    environment:
+      - JAVA_OPTS=-XX:+IgnoreUnrecognizedVMOptions
+      - canal.conf.mode=rocketMQ
+      - canal.conf.consumerProperties.rocketmq.namesrv.addr=192.168.88.123:9876
+    networks:
+      canal:
+        ipv4_address: 172.224.0.139
+        aliases:
+          - ca1
 
 volumes:
   canal-admin-db-data:
