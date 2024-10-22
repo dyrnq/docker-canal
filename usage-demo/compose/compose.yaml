@@ -120,13 +120,13 @@ services:
       canal:
         aliases:
           - adminer
-  main-db:
+  main-db8:
     image: mysql:8.0.40
     restart: always
     volumes:
-      - main-db-data:/var/lib/mysql
+      - main-db8-data:/var/lib/mysql
       - $HOME/var/lib/mysql/config/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
-      - $HOME/sqls/main-db:/docker-entrypoint-initdb.d
+      - $HOME/sqls/main-db8:/docker-entrypoint-initdb.d
     environment:
       - MYSQL_ROOT_PASSWORD=666666
     command:
@@ -141,7 +141,7 @@ services:
     networks:
       canal:
         aliases:
-          - main-db
+          - main-db8
 
   main-db5:
     image: mysql:5.7.44
@@ -149,7 +149,7 @@ services:
     volumes:
       - main-db5-data:/var/lib/mysql
       - $HOME/var/lib/mysql/config/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
-      - $HOME/sqls/main-db:/docker-entrypoint-initdb.d
+      - $HOME/sqls/main-db5:/docker-entrypoint-initdb.d
     environment:
       - MYSQL_ROOT_PASSWORD=666666
     command:
@@ -234,7 +234,7 @@ services:
 
 volumes:
   canal-admin-db-data:
-  main-db-data:
+  main-db8-data:
   main-db5-data:
 
 networks:

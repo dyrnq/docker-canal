@@ -36,7 +36,8 @@ is_detached() {
 docker network inspect canal &>/dev/null || docker network create --subnet 172.224.0.0/16 --gateway 172.224.0.1 --driver bridge canal
 
 mkdir -p "${HOME}"/sqls/admin-db
-mkdir -p "${HOME}"/sqls/main-db
+mkdir -p "${HOME}"/sqls/main-db5
+mkdir -p "${HOME}"/sqls/main-db8
 mkdir -p "${HOME}"/var/lib/canal-admin-foo
 
 curl -fSL -# -O --retry 10 https://ghp.ci/https://github.com/alibaba/canal/raw/master/docker/image/canal_manager.sql
@@ -63,14 +64,21 @@ EOF
 rm -rf create_table.sql
 
 
-cat > "${HOME}"/sqls/main-db/init.sql <<EOF
+cat > "${HOME}"/sqls/main-db5/init.sql <<EOF
 CREATE USER canal IDENTIFIED BY 'canal';
 GRANT SELECT, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'canal'@'%';
 -- GRANT ALL PRIVILEGES ON *.* TO 'canal'@'%' ;
 FLUSH PRIVILEGES;
 EOF
 
-cat > "${HOME}"/sqls/main-db/mytest2.sql <<'EOF'
+cat > "${HOME}"/sqls/main-db8/init.sql <<EOF
+CREATE USER canal IDENTIFIED WITH mysql_native_password BY 'canal';
+GRANT SELECT, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'canal'@'%';
+-- GRANT ALL PRIVILEGES ON *.* TO 'canal'@'%' ;
+FLUSH PRIVILEGES;
+EOF
+
+cat > "${HOME}"/sqls/main-db5/mytest2.sql <<'EOF'
 CREATE DATABASE /*!32312 IF NOT EXISTS*/ `mytest2` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_bin */;
 USE `mytest2`;
 SET NAMES utf8;
@@ -122,7 +130,7 @@ INSERT INTO stuff (id, name) VALUES
 (30, 'Derek');
 
 EOF
-
+cp -f -v "${HOME}"/sqls/main-db5/mytest2.sql "${HOME}"/sqls/main-db8/mytest2.sql
 
 
 mkdir -p "${HOME}"/var/lib/zoo/zoo1/{datalog,data,logs}
