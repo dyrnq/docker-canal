@@ -48,7 +48,13 @@ else
     http -j --ignore-stdin --verbose --session /tmp/canal.admin.session POST $cluster_cluster_api name=foo zkHosts=zoo1:2181,zoo2:2181,zoo3:2181 X-Token:"${token}"
 fi
 
+## check main config exists
+
+if [ "null" = "$(http -j --ignore-stdin --session /tmp/canal.admin.session GET "${cluster_config_api}/1/0" | jq -r '.data.id')" ]; then
 http -j --ignore-stdin --verbose --session /tmp/canal.admin.session PUT $cluster_config_api clusterId=1 name=canal.properties content=@"${SCRIPT_DIR}"/canal.properties X-Token:"${token}"
+else
+  echo "cluster foo main config already exists"
+fi
 
 sleep 5s;
 
