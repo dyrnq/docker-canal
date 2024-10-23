@@ -81,6 +81,25 @@ canal-adapter is the canal client adapter.
 | startup.sh            | /home/admin/canal-adapter/bin/startup.sh                                                                                                        |
 | startup.sh github     | [client-adapter/launcher/src/main/bin/startup.sh](https://github.com/alibaba/canal/blob/master/client-adapter/launcher/src/main/bin/startup.sh) |
 
+
+## image volume mount
+
+| image name          | volume mount                                 |
+|---------------------|----------------------------------------------|
+| dyrnq/canal-server  | /home/admin/canal-server/{conf,logs,plugin}  |
+| dyrnq/canal-admin   | /home/admin/canal-admin/{conf,logs}          |
+| dyrnq/canal-adapter | /home/admin/canal-adapter/{conf,logs,plugin} |
+
+Note that if the entire directory is mounted, the original files in the container will be overwritten. You can first copy the default files from the container and then mount them into the working container.
+
+e.g.
+
+```bash
+docker run -itd --rm --name canal-tmp --entrypoint "" dyrnq/canal-server:1.1.8-alpha-3-jdk21 bash -c "tail -f /dev/null"
+docker cp canal-tmp:/home/admin/canal-server/conf $(pwd)
+docker rm -f canal-tmp 2>/dev/null || true
+```
+
 ## HA
 
 prerequisites:
