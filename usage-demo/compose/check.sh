@@ -17,15 +17,15 @@ done
 
 ignore_Warning=" 2>/dev/vnull "
 
-docker compose exec -it "${container}" bash -c "mysql -uroot --password=666666 -e \"show master status;';\" ${ignore_Warning}"
-
-docker compose exec -it "${container}" bash -c "mysql -uroot --password=666666 -e \"show slave hosts;';\" ${ignore_Warning}"
+docker compose exec -it "${container}" bash -c "mysql -uroot --password=666666 -e \"show master status;\" ${ignore_Warning}"
+docker compose exec -it "${container}" bash -c "mysql -uroot --password=666666 -e \"show slave hosts;\" ${ignore_Warning}"
 docker compose exec -it "${container}" bash -c "mysql -uroot --password=666666 -e \"SHOW VARIABLES LIKE '%log_bin%';\" ${ignore_Warning}"
 docker compose exec -it "${container}" bash -c "mysql -uroot --password=666666 -e \"SHOW VARIABLES LIKE '%binlog%';\" ${ignore_Warning}"
 docker compose exec -it "${container}" bash -c "mysql -uroot --password=666666 -e \"SHOW VARIABLES LIKE '%slave%';\" ${ignore_Warning}"
 docker compose exec -it "${container}" bash -c "mysql -uroot --password=666666 -e \"SHOW BINARY LOGS;\" ${ignore_Warning}"
 docker compose exec -it "${container}" bash -c "mysql -uroot --password=666666 -e \"SELECT User, Host, plugin FROM mysql.user where User='canal';\" ${ignore_Warning}"
 docker compose exec -it "${container}" bash -c "mysql -uroot --password=666666 -e \"SELECT User, Host, plugin FROM mysql.user where User='root';\" ${ignore_Warning}"
+docker compose exec -it "${container}" bash -c "mysql -uroot --password=666666 -e \"SHOW BINLOG EVENTS IN 'mysql-bin.000001' FROM 1\" ${ignore_Warning}"
 
 
 
