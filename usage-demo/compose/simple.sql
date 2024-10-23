@@ -10,3 +10,4 @@ CREATE TABLE `person` (
 
 
 insert into `person` (`id`, `last_name`, `first_name`, `address`, `city`) values (1, 'Li', 'Lily', '123 Main St', 'New York');
+insert into `person` (`id`, `last_name`, `first_name`, `address`, `city`) values (20, '李', '小明', '南山区某街道某小区', '深圳');
