@@ -4,9 +4,9 @@
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null 2>&1 && pwd -P)
 
 
-zoo1_dir="${HOME}"/var/lib/zoo1
-zoo2_dir="${HOME}"/var/lib/zoo2
-zoo3_dir="${HOME}"/var/lib/zoo3
+zoo1_dir="${HOME}"/var/lib/zoo/zoo1
+zoo2_dir="${HOME}"/var/lib/zoo/zoo2
+zoo3_dir="${HOME}"/var/lib/zoo/zoo3
 
 remove_flag=""
 DETACHED=${DETACHED:-}
@@ -175,11 +175,14 @@ EOF
 }
 
 if [ "$remove_flag" = "1" ]; then
+    echo "will remove all containers, docker-compose down"
     docker-compose down
 elif [ "$remove_flag" = "2" ]; then
-    rm -rf "${zoo1_dir}"
-    rm -rf "${zoo2_dir}"
-    rm -rf "${zoo3_dir}"
+    echo "will remove all containers and data, docker-compose down --volumes"
+
+    rm -rfv "${zoo1_dir}"
+    rm -rfv "${zoo2_dir}"
+    rm -rfv "${zoo3_dir}"
     docker-compose down --volumes
 else
 

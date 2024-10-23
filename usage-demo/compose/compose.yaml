@@ -58,6 +58,7 @@ services:
     ports:
       - 12181:2181
       - 18080:8080
+    user: "1000:1000"
     volumes:
       - "$HOME/var/lib/zoo/zoo1/data:/data"
       - "$HOME/var/lib/zoo/zoo1/datalog:/datalog"
@@ -78,6 +79,7 @@ services:
     ports:
       - 22181:2181
       - 28080:8080
+    user: "1000:1000"
     volumes:
       - "$HOME/var/lib/zoo/zoo2/data:/data"
       - "$HOME/var/lib/zoo/zoo2/datalog:/datalog"
@@ -98,6 +100,7 @@ services:
     ports:
       - 32181:2181
       - 38080:8080
+    user: "1000:1000"
     volumes:
       - "$HOME/var/lib/zoo/zoo3/data:/data"
       - "$HOME/var/lib/zoo/zoo3/datalog:/datalog"
