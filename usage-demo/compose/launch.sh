@@ -3,6 +3,12 @@
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null 2>&1 && pwd -P)
 
+
+zoo1_dir="${HOME}"/var/lib/zoo1
+zoo2_dir="${HOME}"/var/lib/zoo2
+zoo3_dir="${HOME}"/var/lib/zoo3
+
+remove_flag=""
 DETACHED=${DETACHED:-}
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -10,12 +16,10 @@ while [ $# -gt 0 ]; do
             DETACHED=1
             ;;
          --remove|-r)
-            docker-compose down
-            exit 0
+            remove_flag="1";
             ;;
          --rr|-rr)
-            docker-compose down --volumes
-            exit 0
+            remove_flag="2"
             ;;
         --*)
             echo "Illegal option $1"
@@ -32,6 +36,8 @@ is_detached() {
         return 0
     fi
 }
+
+init_containers() {
 
 docker network inspect canal &>/dev/null || docker network create --subnet 172.224.0.0/16 --gateway 172.224.0.1 --driver bridge canal
 
@@ -72,6 +78,7 @@ FLUSH PRIVILEGES;
 EOF
 
 cat > "${HOME}"/sqls/main-db8/init.sql <<EOF
+-- CREATE USER canal IDENTIFIED BY 'canal';
 CREATE USER canal IDENTIFIED WITH mysql_native_password BY 'canal';
 GRANT SELECT, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'canal'@'%';
 -- GRANT ALL PRIVILEGES ON *.* TO 'canal'@'%' ;
@@ -133,9 +140,9 @@ EOF
 cp -f -v "${HOME}"/sqls/main-db5/mytest2.sql "${HOME}"/sqls/main-db8/mytest2.sql
 
 
-mkdir -p "${HOME}"/var/lib/zoo/zoo1/{datalog,data,logs}
-mkdir -p "${HOME}"/var/lib/zoo/zoo2/{datalog,data,logs}
-mkdir -p "${HOME}"/var/lib/zoo/zoo3/{datalog,data,logs}
+mkdir -p "${zoo1_dir}"/{datalog,data,logs}
+mkdir -p "${zoo2_dir}"/{datalog,data,logs}
+mkdir -p "${zoo3_dir}"/{datalog,data,logs}
 
 mkdir -p "${HOME}"/var/lib/cs1/logs
 mkdir -p "${HOME}"/var/lib/cs2/logs
@@ -165,11 +172,28 @@ cat >"${HOME}"/var/logback.xml<<'EOF'
     </root>
 </configuration>
 EOF
+}
 
-if is_detached; then
-    docker compose up -d
+if [ "$remove_flag" = "1" ]; then
+    docker-compose down
+elif [ "$remove_flag" = "2" ]; then
+    rm -rf "${zoo1_dir}"
+    rm -rf "${zoo2_dir}"
+    rm -rf "${zoo3_dir}"
+    docker-compose down --volumes
 else
-    docker compose up
+
+
+  init_containers
+
+  if is_detached; then
+      docker compose up -d
+  else
+      docker compose up
+  fi
+
 fi
 
-http
+
+
+
