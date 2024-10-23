@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS `person`;
 CREATE TABLE `person` (
-  `id` int DEFAULT NULL,
+  `id` int PRIMARY KEY,
   `last_name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
   `first_name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
   `address` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
