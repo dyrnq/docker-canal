@@ -15,7 +15,7 @@ while [ $# -gt 0 ]; do
 done
 
 
-ignore_Warning=" 2>/dev/vnull "
+ignore_Warning=" 2>/dev/null "
 
 docker compose exec -it "${container}" bash -c "mysql -uroot --password=666666 -e \"show master status;\" ${ignore_Warning}"
 docker compose exec -it "${container}" bash -c "mysql -uroot --password=666666 -e \"show slave hosts;\" ${ignore_Warning}"
