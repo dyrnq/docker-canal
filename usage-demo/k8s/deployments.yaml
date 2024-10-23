@@ -68,7 +68,7 @@ spec:
     spec:
       containers:
       - name: mysql
-        image: mysql:8.0.40
+        image: bitnami/mysql:8.0.40-debian-12-r1
         env:
         - name: MYSQL_ROOT_PASSWORD
           value: "666666"
@@ -80,15 +80,21 @@ spec:
         - containerPort: 3306
         volumeMounts:
         - name: mysql-storage
-          mountPath: /var/lib/mysql
+          mountPath: /bitnami/mysql/data
         - name: custom-init-scripts
           mountPath: /docker-entrypoint-initdb.d
+        - name: custom-conf
+          mountPath: /opt/bitnami/mysql/conf/my_custom.cnf
+          subPath: my_custom.cnf
       volumes:
       - name: mysql-storage
         emptyDir: {}
       - name: custom-init-scripts
         configMap:
           name: canal-mysql-initdb
+      - name: custom-conf
+        configMap:
+          name: canal-mysql-conf
 ---
 apiVersion: v1
 kind: Service
@@ -100,6 +106,18 @@ spec:
   ports:
     - port: 3306
       targetPort: 3306
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: canal-mysql-conf
+  labels:
+    app: canal-demo
+data:
+  my_custom.cnf: |
+    character_set_server = utf8mb4
+    collation_server = utf8mb4_unicode_ci
+    default_time_zone = '+08:00'
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -341,7 +359,7 @@ data:
     canal.instance.rds.instanceId=
 
     # position info
-    canal.instance.master.address=127.0.0.1:3306
+    canal.instance.master.address=main-db8-mysql.default.svc.cluster.local:3306
     canal.instance.master.journal.name=
     canal.instance.master.position=
     canal.instance.master.timestamp=
@@ -390,7 +408,8 @@ data:
     #canal.instance.filter.black.field=test1.t_product:subject/product_image,test2.t_company:id/name/contact/ch
 
     # mq config
-    canal.mq.topic=example
+    canal.mq.topic=k8sexample
+    canal.mq.dynamicTopic=k8stest2
     # dynamic topic route by schema or table regex
     #canal.mq.dynamicTopic=mytest1.user,topic2:mytest2\\..*,.*\\..*
     canal.mq.partition=0
@@ -424,7 +443,7 @@ kind: StatefulSet
 metadata:
   name: canal-server
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: canal-demo
@@ -465,10 +484,14 @@ spec:
               value: classpath:spring/default-instance.xml
             - name: canal.serverMode
               value: rocketMQ
+            - name: rocketmq.namesrv.addr
+              value: 192.168.88.123:9876
+            - name: rocketmq.producer.group
+              value: k8stest
             - name: canal.instance.tsdb.enable
               value: "true"
             - name: canal.instance.tsdb.url
-              value: "jdbc:mysql://canal-mysql.default.svc.cluster.local:3306/canal_tsdb?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true"
+              value: "jdbc:mysql://canal-mysql.default.svc.cluster.local:3306/canal_tsdb?useUnicode=true&characterEncoding=utf8&useSSL=false&autoReconnect=true&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true"
             - name: canal.instance.tsdb.dbUsername
               value: canal
             - name: canal.instance.tsdb.dbPassword
@@ -540,3 +563,114 @@ spec:
   ports:
     - port: 9090
       targetPort: http
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: main-db8-mysql-initdb
+data:
+  initdb.sql: |
+
+    CREATE USER canal IDENTIFIED WITH mysql_native_password BY 'canal';
+    GRANT SELECT, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'canal'@'%';
+    FLUSH PRIVILEGES;
+    CREATE DATABASE /*!32312 IF NOT EXISTS*/ `k8stest2` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_bin */;
+    USE `k8stest2`;
+    SET NAMES utf8;
+    SET FOREIGN_KEY_CHECKS = 0;
+
+    -- ----------------------------
+    -- Table structure for stuff
+    -- ----------------------------
+    DROP TABLE IF EXISTS `stuff`;
+    CREATE TABLE `stuff` (
+        id INT PRIMARY KEY,
+        name VARCHAR(50)
+    );
+
+
+    INSERT INTO stuff (id, name) VALUES (1, 'Alice');
+    INSERT INTO stuff (id, name) VALUES (2, 'Bob');
+    INSERT INTO stuff (id, name) VALUES (3, 'Charlie');
+    INSERT INTO stuff (id, name) VALUES (4, 'David');
+    INSERT INTO stuff (id, name) VALUES (5, 'Eva');
+    INSERT INTO stuff (id, name) VALUES (6, 'Frank');
+    INSERT INTO stuff (id, name) VALUES (7, 'Grace');
+    INSERT INTO stuff (id, name) VALUES (8, 'Hannah');
+    INSERT INTO stuff (id, name) VALUES (9, 'Ivy');
+    INSERT INTO stuff (id, name) VALUES (10, 'Jack');
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: main-db8-mysql-conf
+  labels:
+    app: canal-demo
+data:
+  my_custom.cnf: |
+    [mysqld]
+    log-bin=mysql-bin
+    binlog-format=ROW
+    server_id=1
+    character_set_server = utf8mb4
+    collation_server = utf8mb4_unicode_ci
+    default_time_zone = '+08:00'
+    binlog_row_image = FULL
+    binlog_row_metadata = FULL
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: main-db8-mysql
+spec:
+  selector:
+    app: main-db8-mysql
+  ports:
+    - port: 3306
+      targetPort: 3306
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: main-db8-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: main-db8-mysql
+  template:
+    metadata:
+      labels:
+        app: main-db8-mysql
+    spec:
+      containers:
+      - name: mysql
+        image: bitnami/mysql:8.0.40-debian-12-r1
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "666666"
+        # - name: MYSQL_USER
+        #   value: canal
+        # - name: MYSQL_PASSWORD
+        #   value: canal
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - name: mysql-storage
+          mountPath: /bitnami/mysql/data
+        - name: custom-init-scripts
+          mountPath: /docker-entrypoint-initdb.d
+        - name: custom-conf
+          mountPath: /opt/bitnami/mysql/conf/my_custom.cnf
+          subPath: my_custom.cnf
+      volumes:
+      - name: mysql-storage
+        emptyDir: {}
+      - name: custom-init-scripts
+        configMap:
+          name: main-db8-mysql-initdb
+      - name: custom-conf
+        configMap:
+          name: main-db8-mysql-conf

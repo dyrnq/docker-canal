@@ -92,7 +92,7 @@ SET NAMES utf8;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for canal_adapter_config
+-- Table structure for stuff
 -- ----------------------------
 DROP TABLE IF EXISTS `stuff`;
 CREATE TABLE `stuff` (
@@ -149,13 +149,38 @@ mkdir -p "${HOME}"/var/lib/cs2/logs
 mkdir -p "${HOME}"/var/lib/cs3/logs
 mkdir -p "${HOME}"/var/lib/ca1/logs
 
-mkdir -p "${HOME}"/var/lib/mysql/config
+mkdir -p "${HOME}"/var/lib/main-db5/config
+mkdir -p "${HOME}"/var/lib/main-db8/config
+mkdir -p "${HOME}"/var/lib/canal-admin-db/config
 
-cat > "${HOME}"/var/lib/mysql/config/mysqld.cnf <<EOF
+
+cat > "${HOME}"/var/lib/main-db5/config/mysqld.cnf <<EOF
 [mysqld]
-log-bin=mysql-bin # 开启 binlog
-binlog-format=ROW # 选择 ROW 模式
-server_id=1 # 配置 MySQL replaction 需要定义，不要和 canal 的 slaveId 重复
+log-bin=mysql-bin
+binlog-format=ROW
+server_id=1
+character_set_server = utf8mb4
+collation_server = utf8mb4_unicode_ci
+default_time_zone = '+08:00'
+EOF
+
+cat > "${HOME}"/var/lib/main-db8/config/mysqld.cnf <<EOF
+[mysqld]
+log-bin=mysql-bin
+binlog-format=ROW
+server_id=1
+character_set_server = utf8mb4
+collation_server = utf8mb4_unicode_ci
+default_time_zone = '+08:00'
+binlog_row_image = FULL
+binlog_row_metadata = FULL
+EOF
+
+cat > "${HOME}"/var/lib/canal-admin-db/config/mysqld.cnf <<EOF
+[mysqld]
+character_set_server = utf8mb4
+collation_server = utf8mb4_unicode_ci
+default_time_zone = '+08:00'
 EOF
 
 

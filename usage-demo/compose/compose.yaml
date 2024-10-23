@@ -3,19 +3,20 @@ services:
     # We use a mariadb image which supports both amd64 & arm64 architecture
     # image: mariadb:10.6.4-focal
     # If you really want to use MySQL, uncomment the following line
-    image: mysql:8.0.40
+    image: bitnami/mysql:8.0.40-debian-12-r1
     restart: always
     volumes:
-      - canal-admin-db-data:/var/lib/mysql
+      - canal-admin-db-data:/bitnami/mysql/data
       - $HOME/sqls/admin-db:/docker-entrypoint-initdb.d
+      - $HOME/var/lib/canal-admin-db/config/mysqld.cnf:/opt/bitnami/mysql/conf/my_custom.cnf:ro
     environment:
       - MYSQL_USER=canal
       - MYSQL_PASSWORD=canal
       - MYSQL_ROOT_PASSWORD=666666
-    command:
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
-      - --default-time-zone=+8:00
+    # command:
+    #   - --character-set-server=utf8mb4
+    #   - --collation-server=utf8mb4_unicode_ci
+    #   - --default-time-zone=+8:00
       # - --default-authentication-plugin=mysql_native_password
     ports:
       - 23306:3306
@@ -124,20 +125,20 @@ services:
         aliases:
           - adminer
   main-db8:
-    image: mysql:8.0.40
+    image: bitnami/mysql:8.0.40-debian-12-r1
     restart: always
     volumes:
-      - main-db8-data:/var/lib/mysql
-      - $HOME/var/lib/mysql/config/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
+      - main-db8-data:/bitnami/mysql/data
+      - $HOME/var/lib/main-db8/config/mysqld.cnf:/opt/bitnami/mysql/conf/my_custom.cnf:ro
       - $HOME/sqls/main-db8:/docker-entrypoint-initdb.d
     environment:
       - MYSQL_ROOT_PASSWORD=666666
-    command:
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
-      - --default-time-zone=+8:00
-      - --binlog-row-image=FULL
-      - --binlog-row-metadata=FULL
+    # command:
+    #   - --character-set-server=utf8mb4
+    #   - --collation-server=utf8mb4_unicode_ci
+    #   - --default-time-zone=+8:00
+    #   - --binlog-row-image=FULL
+    #   - --binlog-row-metadata=FULL
       # - --default-authentication-plugin=mysql_native_password
     ports:
       - 33306:3306
@@ -147,18 +148,18 @@ services:
           - main-db8
 
   main-db5:
-    image: mysql:5.7.44
+    image: bitnami/mysql:5.7.43-debian-11-r73
     restart: always
     volumes:
-      - main-db5-data:/var/lib/mysql
-      - $HOME/var/lib/mysql/config/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
+      - main-db5-data:/bitnami/mysql/data
+      - $HOME/var/lib/main-db5/config/mysqld.cnf:/opt/bitnami/mysql/conf/my_custom.cnf:ro
       - $HOME/sqls/main-db5:/docker-entrypoint-initdb.d
     environment:
       - MYSQL_ROOT_PASSWORD=666666
-    command:
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
-      - --default-time-zone=+8:00
+    # command:
+    #   - --character-set-server=utf8mb4
+    #   - --collation-server=utf8mb4_unicode_ci
+    #   - --default-time-zone=+8:00
       # - --default-authentication-plugin=mysql_native_password
     ports:
       - 34306:3306

@@ -27,6 +27,7 @@ docker compose exec -it "${container}" bash -c "mysql -uroot --password=666666 -
 docker compose exec -it "${container}" bash -c "mysql -uroot --password=666666 -e \"SELECT User, Host, plugin FROM mysql.user where User='root';\" ${ignore_Warning}"
 docker compose exec -it "${container}" bash -c "mysql -uroot --password=666666 -e \"SHOW BINLOG EVENTS IN 'mysql-bin.000001' FROM 1\" ${ignore_Warning}"
 
-
+docker compose exec -it "${container}" bash -c "mysql -uroot --password=666666 -e \"SHOW VARIABLES LIKE '%char%';\" ${ignore_Warning}"
+docker compose exec -it "${container}" bash -c "mysql -uroot --password=666666 -e \"SHOW VARIABLES LIKE '%time_zone%';\" ${ignore_Warning}"
 
 
