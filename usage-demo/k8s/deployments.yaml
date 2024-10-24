@@ -115,6 +115,7 @@ metadata:
     app: canal-demo
 data:
   my_custom.cnf: |
+    [mysqld]
     character_set_server = utf8mb4
     collation_server = utf8mb4_unicode_ci
     default_time_zone = '+08:00'
