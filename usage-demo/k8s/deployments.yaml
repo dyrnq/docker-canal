@@ -504,6 +504,14 @@ spec:
               name: tcp-11110
             - containerPort: 11111
               name: tcp-11111
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 11110
+            timeoutSeconds: 5
           volumeMounts:
             - name: canal-config
               mountPath: /home/admin/canal-server/conf/canal.properties
