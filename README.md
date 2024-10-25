@@ -15,7 +15,7 @@ These images have the following features:
 - use gosu running that admin user which uid is 1000 and gid 1000.
 - follow the image building principle and one container only does one thing, the last run java with pid=1(minor surgery on the original bin/startup.sh).
 - supported version >=1.1.4. see tags [dyrnq/canal-server/tags](https://hub.docker.com/r/dyrnq/canal-server/tags).
-- Note that these images is not an official mirror.
+- Please note that these images are not official images. However, they are compatible with official images.
 
 ## canal-server
 
