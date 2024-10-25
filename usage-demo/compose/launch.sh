@@ -162,6 +162,10 @@ server_id=1
 character_set_server = utf8mb4
 collation_server = utf8mb4_unicode_ci
 default_time_zone = '+08:00'
+# binlog_rows_query_log_events = 1
+# MySQL 5.6.2 introduces two parameters: binlog_rows_query_log_events and binlog_row_image
+# binlog_row_image = 'full'
+# binlog_row_image = 'minimal'
 EOF
 
 cat > "${HOME}"/var/lib/main-db8/config/mysqld.cnf <<EOF
