@@ -151,6 +151,15 @@ canal.instance.global.spring.xml = classpath:spring/default-instance.xml
 3. config instance configs for all the canal-server.
 4. run canal-server.
 
+### HA without zookeeper
+
+if you don't want to use zookeeper.
+
+1. you need to keep the `canal.properties` configs same,
+2. use the same instance configs for all the canal-server. 
+3. must use `Cloud Disk` to share the canal-server's data. e.g. `/home/admin/canal-server/conf/example/instance.properties` e.g. `/home/admin/canal-server/conf/example/meta.data`
+
+
 ### k8s
 
 In k8s, using a shared configmap(canal.properties) to configure each canal-server the same, it doesn't seem necessary deploy the `canal-admin` module(to be verified).
