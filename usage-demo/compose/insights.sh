@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-docker compose exec -it main-db5 bash -c "mysqladmin variables -uroot --password=666666 2>/dev/null| grep binlog | sort" > 5-binlog.txt
+docker compose exec -it main-db5 bash -c "mysqladmin variables -uroot --password=666666 2>/dev/null| grep -E \"binlog|log_bin\" | sort" > 5-binlog.txt
 
-docker compose exec -it main-db8 bash -c "mysqladmin variables -uroot --password=666666 2>/dev/null| grep binlog | sort" > 8-binlog.txt
+docker compose exec -it main-db8 bash -c "mysqladmin variables -uroot --password=666666 2>/dev/null| grep -E \"binlog|log_bin\" | sort" > 8-binlog.txt
 
 
 for i in 5 8; do
