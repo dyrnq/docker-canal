@@ -166,9 +166,52 @@ services:
     networks:
       canal:
         aliases:
-          - main5-db
+          - main-db5
 
+  replica-db5:
+    image: bitnami/mysql:5.7.43-debian-11-r73
+    restart: always
+    volumes:
+      - replica-db5-data:/bitnami/mysql/data
+      - $HOME/var/lib/replica-db5/config/mysqld.cnf:/opt/bitnami/mysql/conf/my_custom.cnf:ro
+      - $HOME/sqls/replica-db5:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=666666
+    ports:
+      - 35306:3306
+    networks:
+      canal:
+        aliases:
+          - replica-db5
 
+  replica-db8:
+    image: bitnami/mysql:8.0.40-debian-12-r1
+    restart: always
+    volumes:
+      - replica-db8-data:/bitnami/mysql/data
+      - $HOME/var/lib/replica-db8/config/mysqld.cnf:/opt/bitnami/mysql/conf/my_custom.cnf:ro
+      - $HOME/sqls/replica-db8:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=666666
+    ports:
+      - 36306:3306
+    networks:
+      canal:
+        aliases:
+          - replica-db8
+
+  canal-sink-jdbc:
+    image: dyrnq/canal-sink-jdbc
+    restart: always
+    environment:
+      - JAVA_OPTS=-Xms2g -Xmx2g -Xmn128m -XX:MetaspaceSize=128m
+      - ROCKETMQ_NAME_SERVER=192.168.88.123:9876
+      - ROCKETMQ_CONSUMER_GROUP=your_consumer_group9
+      - ROCKETMQ_CONSUMER_SUBSCRIBE=mytest2
+    networks:
+      canal:
+        aliases:
+          - canal-sink-jdbc
 
   cs1:
     image: dyrnq/canal-server:1.1.8-alpha-3-jdk21
@@ -263,6 +306,8 @@ volumes:
   canal-admin-db-data:
   main-db8-data:
   main-db5-data:
+  replica-db5-data:
+  replica-db8-data:
 
 networks:
   canal:

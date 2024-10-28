@@ -44,6 +44,10 @@ docker network inspect canal &>/dev/null || docker network create --subnet 172.2
 mkdir -p "${HOME}"/sqls/admin-db
 mkdir -p "${HOME}"/sqls/main-db5
 mkdir -p "${HOME}"/sqls/main-db8
+
+mkdir -p "${HOME}"/sqls/replica-db5
+mkdir -p "${HOME}"/sqls/replica-db8
+
 mkdir -p "${HOME}"/var/lib/canal-admin-foo
 
 curl -fSL -# -O --retry 10 https://ghp.ci/https://github.com/alibaba/canal/raw/master/docker/image/canal_manager.sql
@@ -140,6 +144,25 @@ EOF
 cp -f -v "${HOME}"/sqls/main-db5/mytest2.sql "${HOME}"/sqls/main-db8/mytest2.sql
 
 
+
+cat > "${HOME}"/sqls/replica-db5/mytest2.sql <<'EOF'
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `mytest2` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_bin */;
+USE `mytest2`;
+SET NAMES utf8;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for stuff
+-- ----------------------------
+DROP TABLE IF EXISTS `stuff`;
+CREATE TABLE `stuff` (
+    id INT PRIMARY KEY,
+    name VARCHAR(50)
+);
+EOF
+cp -f -v "${HOME}"/sqls/replica-db5/mytest2.sql "${HOME}"/sqls/replica-db8/mytest2.sql
+
+
 mkdir -p "${zoo1_dir}"/{datalog,data,logs}
 mkdir -p "${zoo2_dir}"/{datalog,data,logs}
 mkdir -p "${zoo3_dir}"/{datalog,data,logs}
@@ -178,6 +201,21 @@ collation_server = utf8mb4_unicode_ci
 default_time_zone = '+08:00'
 binlog_row_image = FULL
 binlog_row_metadata = FULL
+EOF
+
+
+cat > "${HOME}"/var/lib/replica-db5/config/mysqld.cnf <<EOF
+[mysqld]
+character_set_server = utf8mb4
+collation_server = utf8mb4_unicode_ci
+default_time_zone = '+08:00'
+EOF
+
+cat > "${HOME}"/var/lib/replica-db8/config/mysqld.cnf <<EOF
+[mysqld]
+character_set_server = utf8mb4
+collation_server = utf8mb4_unicode_ci
+default_time_zone = '+08:00'
 EOF
 
 cat > "${HOME}"/var/lib/canal-admin-db/config/mysqld.cnf <<EOF
