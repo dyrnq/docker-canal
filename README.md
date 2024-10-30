@@ -159,10 +159,9 @@ if you don't want to use zookeeper.
 2. use the same instance configs for all the canal-server. 
 3. must use `Cloud Disk` to share the canal-server's data. e.g. `/home/admin/canal-server/conf/example/instance.properties` e.g. `/home/admin/canal-server/conf/example/meta.data`
 
-
 ### k8s
 
-In k8s, using a shared configmap(canal.properties) to configure each canal-server the same, it doesn't seem necessary deploy the `canal-admin` module(to be verified).
+In k8s, there are two options, one is using a shared configmap(canal.properties) to configure each canal-server the same canal.properties, and another is using canal-admin.
 
 ## ref
 

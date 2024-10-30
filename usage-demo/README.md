@@ -35,11 +35,27 @@ cd compose
 
 k8s部署的集群并不包含canal-admin服务,直接使用k8s中的configmap共享配置
 
+### optional configmap
+
+using configmap share canal.properties
+
 ```bash
 cd k8s
 
 # 启动
 ./launch.sh
+
+```
+
+### optional canal-admin
+
+using canal-admin share cluster`s canal.properties
+
+```bash
+cd k8s
+
+# 启动
+./launch.sh -a
 
 ```
 
