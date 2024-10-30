@@ -186,7 +186,7 @@ spec:
     spec:
       containers:
       - name: mysql
-        image: bitnami/mysql:8.0.40-debian-12-r1
+        image: bitnami/mysql:8.0.40-debian-12-r2
         resources:
           requests:
             memory: "1024Mi"
@@ -383,7 +383,7 @@ spec:
     spec:
       containers:
       - name: mysql
-        image: bitnami/mysql:8.0.40-debian-12-r1
+        image: bitnami/mysql:8.0.40-debian-12-r2
         resources:
           requests:
             memory: "1024Mi"

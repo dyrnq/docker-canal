@@ -3,7 +3,7 @@ services:
     # We use a mariadb image which supports both amd64 & arm64 architecture
     # image: mariadb:10.6.4-focal
     # If you really want to use MySQL, uncomment the following line
-    image: bitnami/mysql:8.0.40-debian-12-r1
+    image: bitnami/mysql:8.0.40-debian-12-r2
     restart: always
     volumes:
       - canal-admin-db-data:/bitnami/mysql/data
@@ -125,7 +125,7 @@ services:
         aliases:
           - adminer
   main-db8:
-    image: bitnami/mysql:8.0.40-debian-12-r1
+    image: bitnami/mysql:8.0.40-debian-12-r2
     restart: always
     volumes:
       - main-db8-data:/bitnami/mysql/data
@@ -185,7 +185,7 @@ services:
           - replica-db5
 
   replica-db8:
-    image: bitnami/mysql:8.0.40-debian-12-r1
+    image: bitnami/mysql:8.0.40-debian-12-r2
     restart: always
     volumes:
       - replica-db8-data:/bitnami/mysql/data
