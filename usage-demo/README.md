@@ -33,7 +33,7 @@ cd compose
 
 ## k8s
 
-k8s部署的集群并不包含canal-admin服务,直接使用k8s中的configmap共享配置
+k8s部署包含了如下两个选项,分别是不包含canal-admin和包含canal-admin的部署方式.
 
 ### optional configmap
 
