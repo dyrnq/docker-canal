@@ -89,79 +89,21 @@ GRANT SELECT, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'canal'@'%';
 FLUSH PRIVILEGES;
 EOF
 
-cat > "${HOME}"/sqls/main-db5/mytest2.sql <<'EOF'
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `mytest2` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_bin */;
-USE `mytest2`;
-SET NAMES utf8;
-SET FOREIGN_KEY_CHECKS = 0;
+# ERROR 1396 (HY000) at line 1 in file: '/docker-entrypoint-initdb.d/init.sql': Operation CREATE USER failed for 'canal'@'%'
+# mysql 06:53:47.19 ERROR ==> Failed executing /docker-entrypoint-initdb.d/init.sql
 
--- ----------------------------
--- Table structure for stuff
--- ----------------------------
-DROP TABLE IF EXISTS `stuff`;
-CREATE TABLE `stuff` (
-    id INT PRIMARY KEY,
-    name VARCHAR(50)
-);
+rm -rf "${HOME}"/sqls/main-db5/mytest2.sql
+rm -rf "${HOME}"/sqls/main-db8/mytest2.sql
+rm -rf "${HOME}"/sqls/replica-db5/mytest2.sql
+rm -rf "${HOME}"/sqls/replica-db8/mytest2.sql
 
+cp -f -v "${SCRIPT_DIR}"/mytest2-100-schema.sql "${HOME}"/sqls/main-db5/
+cp -f -v "${SCRIPT_DIR}"/mytest2-101-data.sql "${HOME}"/sqls/main-db5/
+cp -f -v "${SCRIPT_DIR}"/mytest2-100-schema.sql "${HOME}"/sqls/main-db8/
+cp -f -v "${SCRIPT_DIR}"/mytest2-101-data.sql "${HOME}"/sqls/main-db8/
 
-INSERT INTO stuff (id, name) VALUES
-(1, 'Alice'),
-(2, 'Bob'),
-(3, 'Charlie'),
-(4, 'David'),
-(5, 'Eva'),
-(6, 'Frank'),
-(7, 'Grace'),
-(8, 'Hannah'),
-(9, 'Ivy'),
-(10, 'Jack');
-
-
-INSERT INTO stuff (id, name) VALUES
-(11, 'Kathy'),
-(12, 'Leo'),
-(13, 'Mia'),
-(14, 'Nina'),
-(15, 'Oscar'),
-(16, 'Paul'),
-(17, 'Quincy'),
-(18, 'Rachel'),
-(19, 'Sam'),
-(20, 'Tina'),
-(21, 'Uma'),
-(22, 'Victor'),
-(23, 'Wendy'),
-(24, 'Xander'),
-(25, 'Yara'),
-(26, 'Zane'),
-(27, 'Amy'),
-(28, 'Brian'),
-(29, 'Cathy'),
-(30, 'Derek');
-
-EOF
-cp -f -v "${HOME}"/sqls/main-db5/mytest2.sql "${HOME}"/sqls/main-db8/mytest2.sql
-
-
-
-cat > "${HOME}"/sqls/replica-db5/mytest2.sql <<'EOF'
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `mytest2` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_bin */;
-USE `mytest2`;
-SET NAMES utf8;
-SET FOREIGN_KEY_CHECKS = 0;
-
--- ----------------------------
--- Table structure for stuff
--- ----------------------------
-DROP TABLE IF EXISTS `stuff`;
-CREATE TABLE `stuff` (
-    id INT PRIMARY KEY,
-    name VARCHAR(50)
-);
-EOF
-cp -f -v "${HOME}"/sqls/replica-db5/mytest2.sql "${HOME}"/sqls/replica-db8/mytest2.sql
-
+cp -f -v "${SCRIPT_DIR}"/mytest2-100-schema.sql "${HOME}"/sqls/replica-db5/
+cp -f -v "${SCRIPT_DIR}"/mytest2-100-schema.sql "${HOME}"/sqls/replica-db8/
 
 mkdir -p "${zoo1_dir}"/{datalog,data,logs}
 mkdir -p "${zoo2_dir}"/{datalog,data,logs}
@@ -203,9 +145,11 @@ collation_server = utf8mb4_unicode_ci
 default_time_zone = '+08:00'
 binlog_row_image = FULL
 binlog_row_metadata = FULL
-mysql_native_password=ON
+# mysql_native_password=ON
+# mysql 8.4
 EOF
 
+# 2024-10-31T06:57:38.365301Z 0 [ERROR] [MY-000067] [Server] unknown variable 'mysql_native_password=ON'.
 
 cat > "${HOME}"/var/lib/replica-db5/config/mysqld.cnf <<EOF
 [mysqld]
