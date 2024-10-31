@@ -45,6 +45,7 @@ services:
       - server.port=8090
       - canal.adminUser=admin
       - canal.adminPasswd=admin
+      - SERVER_SERVLET_SESSION_TIMEOUT=6d
     ports:
       - 18090:8090
     networks:
