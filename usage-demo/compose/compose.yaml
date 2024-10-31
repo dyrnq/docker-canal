@@ -35,7 +35,7 @@ services:
       - "$HOME/var/logback.xml:/home/admin/canal-admin/conf/logback.xml"
     environment:
       - TZ=Asia/Shanghai
-      - JAVA_OPTS=-XX:+IgnoreUnrecognizedVMOptions -XX:-UseG1GC -XX:+UseZGC -XX:+PrintFlagsFinal
+      - JAVA_OPTS=-XX:+IgnoreUnrecognizedVMOptions -XX:-UseG1GC -XX:+UseZGC
       - spring.datasource.address=canal-admin-db:3306
       - spring.datasource.database=canal_manager
       - spring.datasource.username=canal
@@ -222,7 +222,7 @@ services:
       - "$HOME/var/logback.xml:/home/admin/canal-server/conf/logback.xml"
     environment:
       - TZ=Asia/Shanghai
-      - JAVA_OPTS=-XX:+IgnoreUnrecognizedVMOptions -XX:-UseG1GC -XX:+UseZGC -XX:+PrintFlagsFinal
+      - JAVA_OPTS=-XX:+IgnoreUnrecognizedVMOptions -XX:-UseG1GC -XX:+UseZGC
       - canal.admin.manager=canal-admin:8090
       - canal.admin.register.auto=true
       - canal.admin.register.cluster=foo
@@ -244,7 +244,7 @@ services:
       - "$HOME/var/logback.xml:/home/admin/canal-server/conf/logback.xml"
     environment:
       - TZ=Asia/Shanghai
-      - JAVA_OPTS=-XX:+IgnoreUnrecognizedVMOptions -XX:-UseG1GC -XX:+UseZGC -XX:+PrintFlagsFinal
+      - JAVA_OPTS=-XX:+IgnoreUnrecognizedVMOptions -XX:-UseG1GC -XX:+UseZGC
       - canal.admin.manager=canal-admin:8090
       - canal.admin.register.auto=true
       - canal.admin.register.cluster=foo
@@ -289,7 +289,7 @@ services:
     #   - "$HOME/var/logback.xml:/home/admin/canal-adapter/conf/logback.xml"
     environment:
       - TZ=Asia/Shanghai
-      - JAVA_OPTS=-XX:+IgnoreUnrecognizedVMOptions -XX:-UseG1GC -XX:+UseZGC -XX:+PrintFlagsFinal
+      - JAVA_OPTS=-XX:+IgnoreUnrecognizedVMOptions -XX:-UseG1GC -XX:+UseZGC
       - canal.conf.mode=rocketMQ
       - canal.conf.consumerProperties.rocketmq.namesrv.addr=192.168.88.123:9876
       - CANAL_CONF_CANALADAPTERS[0]_INSTANCE=example
