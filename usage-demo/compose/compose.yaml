@@ -303,13 +303,42 @@ services:
         ipv4_address: 172.224.0.139
         aliases:
           - ca1
-
+  source-84:
+    image: bitnami/mysql:8.4.3-debian-12-r2
+    restart: always
+    volumes:
+      - source-84-data:/bitnami/mysql/data
+      - $HOME/var/lib/source-84/config/mysqld.cnf:/opt/bitnami/mysql/conf/my_custom.cnf:ro
+      - $HOME/sqls/source-84:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=666666
+    ports:
+      - 37306:3306
+    networks:
+      canal:
+        ipv4_address: 172.224.0.148
+  dest-84:
+    image: bitnami/mysql:8.4.3-debian-12-r2
+    restart: always
+    volumes:
+      - dest-84-data:/bitnami/mysql/data
+      - $HOME/var/lib/dest-84/config/mysqld.cnf:/opt/bitnami/mysql/conf/my_custom.cnf:ro
+      - $HOME/sqls/dest-84:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=666666
+    ports:
+      - 38306:3306
+    networks:
+      canal:
+        ipv4_address: 172.224.0.149
 volumes:
   canal-admin-db-data:
   main-db8-data:
   main-db5-data:
   replica-db5-data:
   replica-db8-data:
+  source-84-data:
+  dest-84-data:
 
 networks:
   canal:

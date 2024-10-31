@@ -9,11 +9,16 @@ compose为包含了
 - canal-admin
 - canal-admin-db（canal-admin的数据库）
 - canal-server（cs1，cs2）
-- main-db8 （mysql master，版本为bitnami/mysql:8.0.40-debian-12-r2）
-- main-db5 （mysql master，版本为bitnami/mysql:5.7.43-debian-11-r73）
+- main-db5 （mysql source，版本为bitnami/mysql:5.7.43-debian-11-r73）
+- replica-db5 （mysql dest，版本为bitnami/mysql:5.7.43-debian-11-r73）
+- main-db8 （mysql source，版本为bitnami/mysql:8.0.40-debian-12-r2）
+- replica-db8 （mysql dest，版本为bitnami/mysql:8.0.40-debian-12-r2）
+- source-84 （mysql source，版本为bitnami/mysql:8.4.3-debian-12-r2）
+- dest-84 （mysql dest，版本为bitnami/mysql:5.7.43-debian-11-r73）
 - adminer（mysql web管理界面）
 - canal-admin-foo（canal-admin的foo集群初始化以及配置初始化）
 - canal-adapter（ca1）
+- canal-sink-jdbc（[dyrnq/canal-sink-jdbc](https://github.com/dyrnq/canal-sink-jdbc)，使用rocketmq-spring-boot-starter消费canal-server产生的消息并sink到目标数据库）
 
 ```bash
 cd compose

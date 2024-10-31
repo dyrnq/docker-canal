@@ -48,6 +48,9 @@ mkdir -p "${HOME}"/sqls/main-db8
 mkdir -p "${HOME}"/sqls/replica-db5
 mkdir -p "${HOME}"/sqls/replica-db8
 
+mkdir -p "${HOME}"/sqls/source-84
+mkdir -p "${HOME}"/sqls/dest-84
+
 mkdir -p "${HOME}"/var/lib/canal-admin-foo
 
 curl -fSL -# -O --retry 10 https://ghp.ci/https://github.com/alibaba/canal/raw/master/docker/image/canal_manager.sql
@@ -89,6 +92,15 @@ GRANT SELECT, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'canal'@'%';
 FLUSH PRIVILEGES;
 EOF
 
+
+cat > "${HOME}"/sqls/source-84/init.sql <<EOF
+-- CREATE USER canal IDENTIFIED BY 'canal';
+CREATE USER canal IDENTIFIED WITH mysql_native_password BY 'canal';
+GRANT SELECT, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'canal'@'%';
+-- GRANT ALL PRIVILEGES ON *.* TO 'canal'@'%' ;
+FLUSH PRIVILEGES;
+EOF
+
 # ERROR 1396 (HY000) at line 1 in file: '/docker-entrypoint-initdb.d/init.sql': Operation CREATE USER failed for 'canal'@'%'
 # mysql 06:53:47.19 ERROR ==> Failed executing /docker-entrypoint-initdb.d/init.sql
 
@@ -101,9 +113,13 @@ cp -f -v "${SCRIPT_DIR}"/mytest2-100-schema.sql "${HOME}"/sqls/main-db5/
 cp -f -v "${SCRIPT_DIR}"/mytest2-101-data.sql "${HOME}"/sqls/main-db5/
 cp -f -v "${SCRIPT_DIR}"/mytest2-100-schema.sql "${HOME}"/sqls/main-db8/
 cp -f -v "${SCRIPT_DIR}"/mytest2-101-data.sql "${HOME}"/sqls/main-db8/
+cp -f -v "${SCRIPT_DIR}"/mytest2-100-schema.sql "${HOME}"/sqls/source-84/
+cp -f -v "${SCRIPT_DIR}"/mytest2-101-data.sql "${HOME}"/sqls/source-84/
 
 cp -f -v "${SCRIPT_DIR}"/mytest2-100-schema.sql "${HOME}"/sqls/replica-db5/
 cp -f -v "${SCRIPT_DIR}"/mytest2-100-schema.sql "${HOME}"/sqls/replica-db8/
+cp -f -v "${SCRIPT_DIR}"/mytest2-100-schema.sql "${HOME}"/sqls/dest-84/
+
 
 mkdir -p "${zoo1_dir}"/{datalog,data,logs}
 mkdir -p "${zoo2_dir}"/{datalog,data,logs}
@@ -118,6 +134,8 @@ mkdir -p "${HOME}"/var/lib/main-db5/config
 mkdir -p "${HOME}"/var/lib/main-db8/config
 mkdir -p "${HOME}"/var/lib/replica-db5/config
 mkdir -p "${HOME}"/var/lib/replica-db8/config
+mkdir -p "${HOME}"/var/lib/source-84/config
+mkdir -p "${HOME}"/var/lib/dest-84/config
 mkdir -p "${HOME}"/var/lib/canal-admin-db/config
 
 
@@ -145,7 +163,19 @@ collation_server = utf8mb4_unicode_ci
 default_time_zone = '+08:00'
 binlog_row_image = FULL
 binlog_row_metadata = FULL
-# mysql_native_password=ON
+EOF
+
+cat > "${HOME}"/var/lib/source-84/config/mysqld.cnf <<EOF
+[mysqld]
+log-bin=mysql-bin
+binlog-format=ROW
+server_id=1
+character_set_server = utf8mb4
+collation_server = utf8mb4_unicode_ci
+default_time_zone = '+08:00'
+binlog_row_image = FULL
+binlog_row_metadata = FULL
+mysql_native_password=ON
 # mysql 8.4
 EOF
 
@@ -159,6 +189,13 @@ default_time_zone = '+08:00'
 EOF
 
 cat > "${HOME}"/var/lib/replica-db8/config/mysqld.cnf <<EOF
+[mysqld]
+character_set_server = utf8mb4
+collation_server = utf8mb4_unicode_ci
+default_time_zone = '+08:00'
+EOF
+
+cat > "${HOME}"/var/lib/dest-84/config/mysqld.cnf <<EOF
 [mysqld]
 character_set_server = utf8mb4
 collation_server = utf8mb4_unicode_ci
