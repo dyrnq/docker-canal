@@ -174,6 +174,8 @@ mkdir -p "${HOME}"/var/lib/ca1/logs
 
 mkdir -p "${HOME}"/var/lib/main-db5/config
 mkdir -p "${HOME}"/var/lib/main-db8/config
+mkdir -p "${HOME}"/var/lib/replica-db5/config
+mkdir -p "${HOME}"/var/lib/replica-db8/config
 mkdir -p "${HOME}"/var/lib/canal-admin-db/config
 
 
