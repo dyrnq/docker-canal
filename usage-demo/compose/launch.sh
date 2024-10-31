@@ -203,6 +203,7 @@ collation_server = utf8mb4_unicode_ci
 default_time_zone = '+08:00'
 binlog_row_image = FULL
 binlog_row_metadata = FULL
+mysql_native_password=ON
 EOF
 
 
