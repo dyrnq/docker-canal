@@ -204,6 +204,7 @@ services:
 
   canal-sink-jdbc:
     image: dyrnq/canal-sink-jdbc
+    pull_policy: always
     restart: always
     environment:
       - JAVA_OPTS=-Xms2g -Xmx2g -Xmn128m -XX:MetaspaceSize=128m
