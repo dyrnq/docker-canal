@@ -48,6 +48,7 @@ done
 
 latest=$(cat latest);
 m="${image_name}";
+ver="${version}";
 
 latest_tag="";
 if [[ "${base_image}" =~ "eclipse-temurin:8u422" ]]; then
