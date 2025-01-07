@@ -53,14 +53,14 @@ mkdir -p "${HOME}"/sqls/dest-84
 
 mkdir -p "${HOME}"/var/lib/canal-admin-foo
 
-curl -fSL -# -O --retry 10 https://ghp.ci/https://github.com/alibaba/canal/raw/master/docker/image/canal_manager.sql
+curl -fSL -# -O --retry 10 https://files.m.daocloud.io/github.com/alibaba/canal/raw/master/docker/image/canal_manager.sql
 mv -f -v canal_manager.sql "${HOME}"/sqls/admin-db
 
 cp -f -v "${SCRIPT_DIR}"/foo.sh "${HOME}"/var/lib/canal-admin-foo/foo.sh
 cp -f -v "${SCRIPT_DIR}"/canal.properties "${HOME}"/var/lib/canal-admin-foo/canal.properties
 cp -f -v "${SCRIPT_DIR}"/instance.properties "${HOME}"/var/lib/canal-admin-foo/instance.properties
 
-curl -fSL -# -O --retry 10 https://ghp.ci/https://github.com/alibaba/canal/blob/master/deployer/src/main/resources/spring/tsdb/sql/create_table.sql
+curl -fSL -# -O --retry 10 https://files.m.daocloud.io/github.com/alibaba/canal/blob/master/deployer/src/main/resources/spring/tsdb/sql/create_table.sql
 
 cat <(cat <<'EOF'
 CREATE DATABASE /*!32312 IF NOT EXISTS*/ `canal_tsdb` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_bin */;
