@@ -26,7 +26,7 @@ done
 
 
 if [ "$remove_flag" = "" ]; then
-    kubectl apply -f https://ghp.ci/https://github.com/dyrnq/dist/raw/main/zookeeper/latest/10-deployments.yaml
+    kubectl apply -f https://files.m.daocloud.io/github.com/dyrnq/dist/raw/main/zookeeper/latest/10-deployments.yaml
     kubectl apply -f ${SCRIPT_DIR}/deployments.yaml
 
     if [ "$canal_admin" = "1" ]; then
@@ -36,7 +36,7 @@ if [ "$remove_flag" = "" ]; then
     fi
 
 else
-    kubectl delete -f https://ghp.ci/https://github.com/dyrnq/dist/raw/main/zookeeper/latest/10-deployments.yaml
+    kubectl delete -f https://files.m.daocloud.io/github.com/dyrnq/dist/raw/main/zookeeper/latest/10-deployments.yaml
     kubectl delete -f ${SCRIPT_DIR}/deployments.yaml
     kubectl delete -f ${SCRIPT_DIR}/optional-canal-admin.yaml
     kubectl delete -f ${SCRIPT_DIR}/optional-configmap.yaml
