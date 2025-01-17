@@ -26,7 +26,7 @@ services:
           - canal-admin-db
 
   canal-admin:
-    image: dyrnq/canal-admin:1.1.8-alpha-3-jdk21
+    image: dyrnq/canal-admin:1.1.8-jdk21
     restart: always
     depends_on:
       canal-admin-db:
@@ -217,7 +217,7 @@ services:
           - canal-sink-jdbc
 
   cs1:
-    image: dyrnq/canal-server:1.1.8-alpha-3-jdk21
+    image: dyrnq/canal-server:1.1.8-jdk21
     restart: always
     volumes:
       - "$HOME/var/logback.xml:/home/admin/canal-server/conf/logback.xml"
@@ -239,7 +239,7 @@ services:
           - cs1
 
   cs2:
-    image: dyrnq/canal-server:1.1.8-alpha-3-jdk21
+    image: dyrnq/canal-server:1.1.8-jdk21
     restart: always
     volumes:
       - "$HOME/var/logback.xml:/home/admin/canal-server/conf/logback.xml"
@@ -283,7 +283,7 @@ services:
     networks:
       canal:
   ca1:
-    image: dyrnq/canal-adapter:1.1.8-alpha-3-jdk21
+    image: dyrnq/canal-adapter:1.1.8-jdk21
     restart: always
     volumes:
       - "$HOME/var/lib/ca1/logs:/home/admin/canal-adapter/logs"

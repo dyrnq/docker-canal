@@ -95,7 +95,7 @@ Note that if the entire directory is mounted, the original files in the containe
 e.g.
 
 ```bash
-docker run -itd --rm --name canal-tmp --entrypoint "" dyrnq/canal-server:1.1.8-alpha-3-jdk21 bash -c "tail -f /dev/null"
+docker run -itd --rm --name canal-tmp --entrypoint "" dyrnq/canal-server:1.1.8-jdk21 bash -c "tail -f /dev/null"
 docker cp canal-tmp:/home/admin/canal-server/conf $(pwd)
 docker rm -f canal-tmp 2>/dev/null || true
 ```

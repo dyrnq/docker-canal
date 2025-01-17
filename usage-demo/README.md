@@ -67,6 +67,6 @@ cd k8s
 ## 注意事项
 
 - 以上都是demo，实际生产环境需要修改配置
-- 以上是基于dyrnq/canal-server:1.1.8-alpha-3-jdk21版本
+- 以上是基于dyrnq/canal-server:1.1.8-jdk21版本
 - 以上都使用了canal.serverMode=rocketMQ， 所以需要启动rocketMQ服务，测试中的192.168.88.123:9876是rocketMQ的地址，需要修改为实际的地址
 - 以上都是用了zookeeper集群来存储canal的元数据

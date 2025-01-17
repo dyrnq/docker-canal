@@ -318,7 +318,7 @@ spec:
     spec:
       enableServiceLinks: true
       containers:
-        - image: dyrnq/canal-server:1.1.8-alpha-3-jdk21
+        - image: dyrnq/canal-server:1.1.8-jdk21
           imagePullPolicy: IfNotPresent
           name: canal-server
           env:

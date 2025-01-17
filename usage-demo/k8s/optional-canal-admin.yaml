@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: canal-admin
-          image: dyrnq/canal-admin:1.1.8-alpha-3-jdk21
+          image: dyrnq/canal-admin:1.1.8-jdk21
           env:
             - name: TZ
               value: "Asia/Shanghai"
@@ -103,7 +103,7 @@ spec:
     spec:
       enableServiceLinks: true
       containers:
-        - image: dyrnq/canal-server:1.1.8-alpha-3-jdk21
+        - image: dyrnq/canal-server:1.1.8-jdk21
           imagePullPolicy: IfNotPresent
           name: canal-server
           args: [ "local" ]
