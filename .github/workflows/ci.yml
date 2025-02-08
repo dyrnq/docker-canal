@@ -13,15 +13,16 @@ jobs:
       fail-fast: false
       matrix:
         base_img:
-        - "eclipse-temurin:8u422-b05-jdk-noble"
-        - "eclipse-temurin:17.0.12_7-jdk-noble"
-        - "eclipse-temurin:21.0.4_7-jdk-noble"
-        - "eclipse-temurin:11.0.24_8-jdk-noble"
+        - "eclipse-temurin:8u442-b06-jdk-noble"
+        - "eclipse-temurin:11.0.26_4-jdk-noble"
+        - "eclipse-temurin:17.0.14_7-jdk-noble"
+        - "eclipse-temurin:21.0.6_7-jdk-noble"
         m:
         - "canal-server"
         - "canal-admin"
         - "canal-adapter"
         vers:
+        - "canal-1.1.8"
         - "canal-1.1.8-alpha-3"
         - "canal-1.1.8-alpha-2"
         - "canal-1.1.8-alpha-1"
