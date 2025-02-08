@@ -51,7 +51,7 @@ m="${image_name}";
 ver="${version}";
 
 latest_tag="";
-if [[ "${base_image}" =~ "eclipse-temurin:8u422" ]]; then
+if [[ "${base_image}" =~ "eclipse-temurin:8u" ]]; then
     latest_tag="${latest_tag} --tag ${repo}/${m}:${ver}"
     latest_tag="${latest_tag} --tag ${repo}/${m}:${ver}-jdk8"
 
