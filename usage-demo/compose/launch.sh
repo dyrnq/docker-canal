@@ -29,6 +29,17 @@ while [ $# -gt 0 ]; do
 done
 
 
+docker_compose_cmd="docker-compose";
+if command -v docker-compose 2>/dev/null 1>/dev/null; then
+    :
+elif docker compose version; then
+    docker_compose_cmd="docker compose"
+else
+    echo "docker compose Not found,please install..."
+    exit 1;
+fi
+
+
 is_detached() {
     if [ -z "$DETACHED" ]; then
         return 1
@@ -226,24 +237,24 @@ EOF
 }
 
 if [ "$remove_flag" = "1" ]; then
-    echo "will remove all containers, docker-compose down"
-    docker-compose down
+    echo "will remove all containers, ${docker_compose_cmd} down"
+    ${docker_compose_cmd} down
 elif [ "$remove_flag" = "2" ]; then
-    echo "will remove all containers and data, docker-compose down --volumes"
+    echo "will remove all containers and data, ${docker_compose_cmd} down --volumes"
 
     rm -rfv "${zoo1_dir}"
     rm -rfv "${zoo2_dir}"
     rm -rfv "${zoo3_dir}"
-    docker-compose down --volumes
+    ${docker_compose_cmd} down --volumes
 else
 
 
   init_containers
 
   if is_detached; then
-      docker compose up -d
+      ${docker_compose_cmd} up -d
   else
-      docker compose up
+      ${docker_compose_cmd} up
   fi
 
 fi
