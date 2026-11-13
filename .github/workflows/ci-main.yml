@@ -23,10 +23,10 @@ jobs:
       fail-fast: false
       matrix:
         base_img:
-        - "eclipse-temurin:8u442-b06-jdk-noble"
-        - "eclipse-temurin:11.0.26_4-jdk-noble"
-        - "eclipse-temurin:17.0.14_7-jdk-noble"
-        - "eclipse-temurin:21.0.6_7-jdk-noble"
+        - "eclipse-temurin:8u512-b09-jdk-noble"
+        - "eclipse-temurin:11.0.33_10-jdk-noble"
+        - "eclipse-temurin:17.0.21_9-jdk-noble"
+        - "eclipse-temurin:21.0.13_9-jdk-noble"
         m:
         - "canal-server"
         - "canal-admin"
